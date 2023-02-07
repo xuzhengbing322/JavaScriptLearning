@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let obj = {
+            name: 'xu',
+            age: 34,
+            info: {
+                hobby: ['travel', 'piano', {
+                    a: 1
+                }],
+                career: {
+                    teacher: 4,
+                    engineer: 9
+                },
+                b:1
+            }
+        }
+        /*
+            浅拷贝：如果拷贝的对象的属性是非[]和{}类型的数据，就可以直接拷贝。
+            深拷贝：如果拷贝的对象的属性是[]和{}类型的数据，就需要递归克隆，直至非[]和{}，再进行拷贝。
+        */
+        function deepClone(origin, target) {
+            let tar = target || {};
+            let toStr = Object.prototype.toString;
+            // 避免维护字符串
+            let arrType = '[object Array]';
+
+            for (let key in origin) {
+                // 判断key是否为origin自己的属性，不拷贝原型上的属性
+                if (origin.hasOwnProperty(key)) {
+                    // 判断key所对应的value值的类型是否为object
+                    if (typeof origin[key] === 'object' && origin[key] !== null) {
+                        /*object分为[],{}情况。它们都需要再次递归克隆，直至克隆的属性是非[]和{}。
+                        根据origin[key]的类型来判断tar[key]是[]或{}，保证两者的数据类型一致，
+                        避免出现格式错误。
+                        */
+                        tar[key] = toStr.call(origin[key]) === arrType ? [] : {};
+                        //将origin[key]做为源对象，tar[key]做为接收对象。递归执行。从而实现深拷贝
+                        deepClone(origin[key], tar[key])
+                    } else {
+                        //当origin中的属性是非[]或{}时，就可以直接将属性赋值给tar，从而实现复制。
+                        tar[key] = origin[key]
+                    }
+                }
+            }
+            
+            return tar
+        }
+
+        const newObj = deepClone(obj, {});
+        // 改变新对象的属性
+        newObj.info.hobby[2].a = 123;
+        console.log(obj, newObj);
+
+
+        /*
+        WeakMap和Map都用于存储键值对，即特殊的对象。Set用于存储值，即特殊的数组。
+        Map存储的键名可以是任意类型，例如：[]、{}。{}存储的键名只能是字符串或Symbol类型的数据。
+    WeakMap存储的键名只能是对象{}。
+        WeakMap的键名是弱引用，Map的键名不是弱引用
+        WeakMap的应用：1、节点的事件处理函数的绑定。2、深拷贝过程中要对信息进行保存。因为如果在拷贝的过程中
+    这个对象其实是被拷贝过的，那就不能再拷贝。如果再拷贝就会有死循环问题。
+        */
+        // WeakMap的弱引用
+        const oBtn = document.querySelector('#btn');
+        const oBtnMap = new WeakMap();
+
+        /*WeakMap的set()创建的键名和外界是弱引用关系。当外界的oBtn被删除，即引用断开。键名就会被垃圾回收，
+        键值也相应被回收。  如果是普通的引用方式，当oBtn节点被删除后，事件处理函数依旧存在不会被垃圾回收。
+        ？？？？存疑：WeakMap的弱引用是键名和键值之间吗
+        */
+        /*
+        oBtnMap.set(oBtn, handleBtnClick);
+        oBtn.addEventListener('click', oBtnMap.get(oBtn), false);
+        oBtn.addEventListener('click', handleBtnClick, false)
+
+        function handleBtnClick() { }
+        // 回收oBtn节点。如果是WeakMap创建的键名为节点，值为事件处理函数。则删除节点后，自动删除函数。
+        oBtn.remove()
+
+        // 普通情况下，回收oBtn节点并不会连带回收事件处理函数。因此需要使用null来回收函数。
+        handleBtnClick = null;
+        */    
+        
+
+
+
+        //objq的prototype中的constructor是Object。也就是说，objq是通过new Object()构造的 
+        const objq = {}  
+        const newObjq = new objq.constructor();  //构造一个新对象，也就是拷贝
+
+        console.log(objq)  //{}
+        newObjq.a = 1;
+        console.log(newObjq)  //{a:1}  
+
+
+        //考虑的拷贝情况： null undefined Date RegExp {} []。function一般不拷贝，因为它是静态的
+        //hashMap用于记录深拷贝次数。 
+        function deepCloneTwo(origin, hashMap = new WeakMap()) {
+            // 拷贝对象可能是null或者undefined，或者是原始值。undefined == null(true)
+            if (origin == undefined || typeof origin !== 'object') {
+                return origin
+            }
+            // 如果origin是Date和RegExp构造出来的，那么就返回它们的实例对象
+            if (origin instanceof Date) {
+                return new Date(origin)
+            }
+
+            if (origin instanceof RegExp) {
+                return new RegExp(origin)
+            }
+
+            //判断是否能获取到hashMap中的origin键，如果能获取则证明target存在，反之不存在。   
+            // const hashKey = hashMap.get(origin)
+
+            // 如果hashKey为真，则证明target存在。如果存在，则直接返回target，不再进行克隆。
+            // if (hashKey) {
+            //     return hashKey
+            // }
+
+            /*origin是[]或{}时，通过实例化它的构造器，拷贝出一个新的[]或{}。
+            但是通过构造器实现的拷贝只能拷贝[]和{}中的非[]或{}数据
+            */ 
+            const target = new origin.constructor()
+            // 拷贝完成后，就通过WeakMap设置origin:target。以便避免再次拷贝
+            // hashMap.set(origin, target)
+            // 拷贝{}和[]
+            for (let key in origin) {
+                if (origin.hasOwnProperty(key)) {
+                    /*target[key] = origin[key]就是将原来对象的属性值赋值到新对象中。可如果原来对象
+                    中还有对象或数组，就需要再次进行深拷贝，直至没有对象。最后再将处理好的原对象的属性值赋值
+                    给新对象。
+                    */
+                    target[key] = deepCloneTwo(origin[key], hashMap)
+                }
+            }
+            return target
+        }
+
+        const newObjw = deepCloneTwo(obj);
+        newObjw.info.hobby[2].a = 123;
+        console.log(obj)
+        console.log(newObjw)
+
+
+        
+        // let test1 = {};
+        // let test2 = {};
+        //  也就是说，在深拷贝过程中拷贝test1后又给它赋值，这就会导致死循环
+        // test2.test1 = test1;  //将test1作为属性给test2
+        // test1.test2 = test2;  //将test2作为属性给test1
+    
+        // console.log(deepClone(test2))  //报错   Maximum call stack size exceeded
+    </script>
+</body>
+
+</html>

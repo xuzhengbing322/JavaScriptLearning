@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* 1、String构造出来的对象上的方法。
+        1.1、常见的方法如下：
+            str.toUpperCase()：将str字符串的小写字母转换成大写字母。
+            str.toLowerCase()：将str字符串的大写字母转换成小写字母。
+            str.toLocaleLowerCase()、str.toLocaleUpperCase()：针对土耳其等特殊语言
+            str.charAt()：根据下标选择str的字符。从0开始。
+            str.charCodeAt()：根据下标选择str的字符，返回这个字符的unicode编码。
+            String.fromCharCode()：根据unicode编码，将字母拼接成字符串。
+            str.indexOf()：从左往右匹配，返回str中第一个符合条件的字符串的下标，没有返回-1。
+第二个参数表示从哪个下标开始往右检索。
+            str.lastIndexof()：从右往左匹配，返回str中第一个符合条件的字符串的下标，没有返回-1。
+第二个参数表示从哪个下标开始往左检索。
+            str.substr(n,m)：n表示开始位，m表示长度。从str的第n位开始（包含第n位），往右数m位，
+然后返回被数到的字符串。如果n是负数，则从右往左数，开始下标为-1。
+            str.substring(n,m)：n表示开始位，m表示结束位。[n,m)。从str的第n位开始（包含第n位字符），
+往右到m位结束(不包含第m位字符)。然后返回在此区间的所有字符串。如果m>n，系统在匹配前先置换mn。
+nm相等，返回空字符串。
+            str.includes()：返回布尔值，表示是否找到了参数字符串
+            str.startsWith()：返回布尔值，表示参数字符串是否在原字符串的头部
+            str.endsWith()：返回布尔值，表示参数字符串是否在原字符串的尾部
+            str.repeat()：返回一个新的字符串，表示将原字符串重复n次
+            str.padStart(num, string)：如果某个字符串不够参数1指定长度，会在原字符串头部以参数2
+string补全。
+            str.padEnd(num, string)：如果某个字符串不够参数1指定长度，会在原字符串尾部以参数2
+string补全。
+        */
+
+        let str = 'abcd'
+        console.log(str.toUpperCase())  //ABCD
+        console.log(str.toLowerCase())  //abcd
+        console.log(str.charAt(2))   //c
+        console.log(str.charCodeAt(2))  //99
+        console.log(String.fromCharCode(72, 69, 76, 76, 79))  //HELLO
+
+        let str2 = 'This is a test';
+        console.log(str2.indexOf('is'))   //2
+        console.log(str2.indexOf('is', 4))  //5
+        console.log(str2.lastIndexOf('is'))  //5
+        console.log(str2.lastIndexOf('is', 4))  //2
+        console.log(str2.substr(10, 4))  //test 
+        console.log(str2.substring(10, 14))  //test
+
+        const stringVariate = 'Hello world!'
+        const stringVariateTwo = 'ello'
+        console.log(stringVariate.indexOf(stringVariateTwo));  //1 
+        console.log(stringVariate.includes(stringVariateTwo));  //true
+        console.log(stringVariate.startsWith('Hello'));  //true
+        console.log(stringVariate.endsWith('!'));  //true
+
+
+       
+        console.log("hello".repeat(2));  //hellohello
+        console.log('x'.padStart(5, 'ab'));  //ababx
+        console.log('x'.padEnd(5, 'ab'));  //xabab
+        /*
+        toString()：将对象转换成字符串
+        valueof()：输出对象的原本的值
+        区别：1、toString返回字符串。valueOf返回原本的值。 2、Data类型中，toString返回的是时间特有的
+    字符串。valueOf返回的是13位毫秒时间戳。3、在数组中，toString返回数组元素用，分割的字符串。
+    valueOf是返回数组原本的值。4、在对象中，toString返回的是对象的类型字符串表示[object Object]
+    valueOf返回对象原本的值。5、toString 在function中，可以通过[native code] 区分JS内置函数和自定义函数
+    6、num.toString接受一个参数-基数radix，将num转换为这个进制的num。 valueOf没有参数。
+        */
+
+
+
+    </script>
+</body>
+
+</html>

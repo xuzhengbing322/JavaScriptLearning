@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*1、执行上下文
+            程序代码按“块”执行，由此可将程序分为全局代码块、函数代码块和块代码块。每次当控制器转到
+ECMAScript可执行代码块的时候，就会进入到一个执行上下文context。因此，执行上下文context可分为：
+1、全局执行上下文，程序预编译时创建。2、函数执行上下文，在函数被定义的时候创建。3、块执行上下文。
+            执行上下文是对象，其中包含三个属性：变量对象（GO/AO）、作用域链(scope chain)、this。
+        */
+        // 问题1：执行上下文是不是一个对象？还是其他什么？
+
+        /*2、变量对象（GO/AO）
+            变量对象用来存储执行上下文中定义的所有变量和函数声明。
+            GO：程序执行的时候会创建一个全局执行上下文，上下文中包含变量对象G0(window)。
+GO存储着所有的全局变量和全局函数声明。
+            AO：函数调用时就会创建一个函数执行上下文，其中的活跃对象AO存储着函数的所有变量和函数声明。
+            ES5中var的变量可以提升，因此预编译的第一步往往是查找var声明的变量。可是在ES6中，let和const
+声明的变量不提升，因此预编译时不查找let和const声明的变量，而是在执行代码的时候遇到let和const声明的变量，
+才将变量写入AO/GO。函数声明具有提升，但是函数表达式不可提升。
+            未声明就赋值的变量是全局变量。全局变量都存储在window全局对象中，window本身就是全局域。
+全局环境中用let和const声明的变量是全局变量，但变量并不是存储在window全局对象中，因此无法通过window.来调用。
+        */
+        varA = 1;
+        console.log("funcOne", funcOne)
+        function funcOne(varE) {
+            console.log("varE",varE)  //f varE() {}
+            function varE() { }
+            arguments[0] = 2;
+            console.log('varE#', varE) //2
+            console.log("varA",varA) //undefined
+            if (varA) {   //因为执行的时候varA是undefined，为false，所以不会执行判断。
+                var varA = 3
+                console.log("varAIf",varA) 
+            }
+            var varC
+            varA = 4;
+            varF = 5;
+            console.log(varC) //undefined
+            console.log("varA",varA) //4
+        }
+
+        var varA
+        // console.log("varF",varF) 报错：not defined
+        funcOne(1)
+        console.log("varF#",varF)  //5
+
+        /*
+                GO = {
+                    1、找变量（let定义的变量不提升）
+                        varA: undefined
+                        varF: 5
+                    2、找函数声明
+                        funcOne: function () {}
+                    3、执行（赋值，函数调用执行）
+                    
+                },
+                AO = {
+                    第一步： 寻找函数里面的形参和变量声明（变量声明的提升）(let定义的变量不提升)
+                    varE: undefined ->
+                    varA: undefined ->
+                    varC: undefined -> 
+                    第二步：把实参的值赋给形参
+                    varE: undefined -> 1
+                    第三步：寻找函数声明，赋值函数体
+                    varE: undefined -> 1 -> function varE(){}
+                    第四步：执行函数(执行赋值语句、判断语句、循环语句、return、函数调用)
+                    varE: undefined -> 1 -> function varE(){} -> 2 
+                    varA: undefined -> 4
+                }
+        */
+
+        //let会让if和for形成块作用域。因此外部无法访问b8。
+        let a3 = 1
+        function test3() {
+            //console.log('&&&',b3) //b3 is not defined
+            if (a3) {
+                let b3 = 2;
+                console.log('**', b3) //2
+            }
+            //console.log('&&&',b3)  //b3 is not defined
+        }
+        test3();
+
+        /*3、作用域
+            function作为引用类型数据，有一些可供访问的属性，如name、length、prototype，还有一些
+不可访问的属性，如[[scope]]：作用域。
+函数上下文的作用域链在函数调用时创建的，包含活动对象和这个函数内部的[[scope]]属性。
+            scope：全局/函数执行上下文context生成时，也就是函数在被定义的时候，就会创建作用域scope。
+作用域是存储作用域链的容器。作用域链链式存储着AO/GO。AO/GO都是对象，是引用类型。作用域链中存储的都是AO/GO
+的引用指针。
+            作用域采用堆内存方式存储AO/GO，即先进先出。程序被执行的时候会先创建全局上下文，生成GO。
+执行期间遇到函数F被定义时，就会创建一个函数作用域。函数F作用域链继承函数所在的函数的作用域链。当函数F
+被调用时，才生成AO，并添加到自己的作用域链的最上方。由此可得，任何作用域链的最底部都是GO。
+            当函数F执行完以后，它的AO就会被销毁，但是函数作用域并没有销毁。此时函数F的作用域链回到函数F
+被定义时的状态。“程序执行光标”也回到函数F被定义时的位置，并继续向下执行。当函数F所在的函数也执行完时，就会
+销毁所在的函数的AO，也就连带销毁了函数F的作用域。可见，外层函数被调用时，内层函数被定义。外层函数执行完毕
+时，内层函数的作用域/执行上下文被销毁。
+            作用域链的作用：程序根据作用域链访问变量和函数。在访问变量或函数时，先查看当前执行上下文中的
+作用域链的顶部AO中是否有访问的变量或函数。如果没再根据作用域链往下查AO/GO中是否有要找的变量或函数。
+由此可见，外层函数的作用域链中没有内层函数的AO，所以外部函数无法访问内部函数的AO。
+        */
+
+        function scopeOne() {
+            function scopeTwo() {
+                let m = 2;
+            }
+            let n = 1;
+            scopeTwo();
+        }
+        let o = 3;
+        scopeOne();
+
+        /*  时刻            作用域           作用域链
+            执行全局         函数scopeOne    0-GO     scopeOne: function () {}
+                                                    o: 3
+            执行scopeOne    函数scopeOne    0-AO     scopeTwo: function
+                                                    n: 1
+                                           1-GO     scopeOne: function
+                                                    o: 3
+                            函数scopeTwo    0-AO     scopeTwo: function
+                                                    n: 1
+                                            1-GO     scopeOne: function
+                                                    o: 3
+            执行scopeTwo    函数scopeTwo     0-AO    m: 2
+                                            1-AO    scopeTwo: function
+                                                    n: 1
+                                            2-GO     scopeOne: function
+                                                    o: 3
+          执行完scopeTwo     函数scopeOne    0-AO     scopeTwo: function
+                                                    n: 1
+                                           1-GO     scopeOne: function
+                                                    o: 3
+          执行完scopeOne     函数scopeOne    0-GO     scopeOne: function
+                                                    o: 3
+          程序执行完
+        
+        */
+
+        /*4、闭包
+         * 外层函数执行时，内层函数被定义。内层函数被定义时，会生成和外层函数执行时相同的作用域链，
+作用域链中包含着外层函数的AO和GO。当内层函数被外层函数return 返回出去后，就相当于将内层函数的执行上下文
+抛到了外层函数所在的执行上下文。外层函数执行完毕后，本来应该销毁外层函数的AO。可是内层函数的作用域链
+中引用到了外层函数的AO，因此外层函数的AO不能被销毁。因此外层函数所在的执行上下文中依旧可以调用内部函数，
+但是无法使用外层函数中的变量和函数。因为外层函数所在的执行上下文中的作用域链没有外层函数的AO。我们将
+内层函数的执行上下文称之为闭包。可见，闭包的作用之一就是把外层函数的AO中的变量变成内层函数的私有变量。
+
+
+        */
+        //案例一： 
+        function closureOutFun() {
+            let a = 1;
+            function closureInFun() {
+                let b = 2;
+                console.log("%%%", a, b, c)
+            }
+            return closureInFun
+        }
+        let c = 3;
+        let closure = closureOutFun();
+        closure() //1 2 3
+        console.log("$$$", c)  //3
+        //console.log("$$$##", a)  // a is not defined
+        //console.log("$$$##@@", b)  // b is not defined
+
+
+        // 案例二：函数做闭包
+        function breadMgr(num) {
+            let breadNum = arguments[0] || 10; //变量成为了私有变量，只能由supply和sale函数访问。
+
+            function supply() {
+                breadNum += 10;
+                console.log(breadNum)
+            }
+
+            function sale() {
+                breadNum--;
+                console.log(breadNum);
+            }
+
+            return [supply, sale]
+        }
+
+        let bread = breadMgr(50)
+
+        bread[0]()  //60
+        bread[1]()  //59
+
+        // 案例三：对象做闭包
+        function calendar(thing) {
+            let sunSched = '';
+            let operation = {
+                setSched: function (thing) {
+                    sunSched = thing;
+                    console.log(sunSched)
+                },
+                showSched: function () {
+                    console.log("my schedule on sunday is " + thing)
+                }
+            }
+            return operation
+        }
+
+        let sun = calendar('studying')
+        sun.setSched('eating');
+        sun.showSched()
+
+        // 案例四：构造函数形成闭包
+        function Compute() {
+            let num = 0;
+
+            this.add = function () {
+                num++;
+                console.log(num)
+            }
+
+            this.mixins = function () {
+                num--;
+                console.log(num);
+            }
+        }
+
+        let compute = new Compute()
+        compute.add()
+        compute.mixins()
+
+
+
+
+
+        /*5、this
+        * 获取全局对象的方法：1、web: window self frames  this; 2、node: global;
+3、worker:  self。4、通用： globalThis
+        * this指向原则：
+         原则一：谁调用this的宿主，this就指向谁。  由此，普通函数如果没有明确的调用对象，拿函数体中
+的this就指向window。 对象中的this指向最近的调用者。
+         原则二：构造函数和类中的this都指向实例对象。
+         原则三：箭头函数的this指向和箭头函数的外部(非箭头函数)的调用者。箭头函数忽略任何形式的this
+指向的改变。call/apply/bind()都不能改变
+         Object.defineProperty(obj, prop, descriptor)：配置项中的this指向obj，即被添加属性的对象。
+         事件处理函数内部的this总是指向被绑定事件的DOM元素。
+        * this的作用：1、程序根据作用域链来访问变量和函数，即便有重名属性和函数名也能沿着作用域链访问。
+然而，每个执行上下文都有默认的this，this指向函数的AO/GO或者对象的变量对象。通过this.xxx就可以直接
+访问this指向的AO/GO/对象的变量对象中的属性和函数。 2、call()/apply()/bind()可以改变this的指向，
+从而能更方便的使用this指向的AO/GO/对象的变量对象中的属性和函数。
+3、构造函数和类需要将属性和方法添加到实例对象中，而this指向实例对象。从而可以通过this.xxx = yyy，
+来实现将属性和方法添加到实例对象中。如果要在构造函数和类中使用实例对象中的属性和方法，就需要通过this.xxx
+来调用，而非直接通过属性名和函数名来调用。因为构造函数和类中没有属性和函数，它们都放到this中了。
+因此，构造函数中定义和调用属性和方法都要通过this，类定义非静态属性需要用this，定义静态属性和方法不需要用
+this，调用属性和方法需要用this。
+        */
+
+        // 普通函数
+        console.log("globalWindow:", this)  //window
+        function outFunThis() {
+            console.log("outFunThis:", this) //window
+            function inFunThis () {
+                console.log("inFunThis", this) //window
+            }
+            inFunThis()
+        }
+        outFunThis()  //window
+
+        // 箭头函数
+        var varJT = 1;
+        var objJT = {
+                varJT: 3,
+            };
+
+        function ordinaryFun () {
+            let varJT = 2;
+            const arrowsFun = () => {
+                console.log("=>:", this.varJT);  //1 this => window
+            } 
+            arrowsFun()
+            arrowsFun.call(objJT)
+        }
+        ordinaryFun()
+
+        // 
+        objJT.ordinaryFunOther = function () {
+            let arrowsFunOther = () => {
+                console.log("arrowsFunOther：",this) // this -> objJT
+            }
+            arrowsFunOther()
+        }
+        objJT.ordinaryFunOther()
+
+        // 
+        objJT.text4 = function () {
+            setTimeout(() => {
+                console.log("*****", this); // this -> objJT
+            }, 1000)
+        }
+        objJT.text4()
+
+        // 
+        objJT.text5 = function () {
+            let t1 = () => {
+                let t2 = () => {
+                    console.log(this)  // this -> obj
+                }
+                t2()
+            }
+            t1()
+        }
+        objJT.text5()
+
+        // 对象
+        let objThis = {
+            a: 1,
+            b: 2,
+            objMethodOne: function () {
+                console.log(this.a)   
+            },
+            objMethodTwo: objMethodTwo,
+            c: {
+                d: 4,
+                objMethodThree: function () {
+                    console.log(this);   // this -> {d: 4 tezt1: fun}，即objThis.c
+                    console.log(this.d)
+                }
+            }
+        }
+
+        function objMethodTwo() {
+            console.log(this.b)   // this -> objThis
+        }
+
+        objThis.objMethodOne();
+        objThis.objMethodTwo();
+        objThis.c.objMethodThree();
+
+        
+
+        //Object.defineProperty(obj, prop, descriptor)配置项中的this指向obj，即被添加属性的对象
+        let objDefine = {};
+        Object.defineProperty(objDefine, 'a', {
+            get: function () {
+                // this -> objDefine
+                console.log(this)
+                return 'I am a A';
+
+            },
+
+        })
+
+        /*
+            事件处理函数的this总是指向被绑定事件的DOM元素。可在面向对象的书写形式中，事件处理函数应该
+存储在实例对象中。因此需要使用bind()来将this指向从DOM元素，改为实例对象。这样点击DOM节点，才能触发
+实例对象中的事件处理函数。
+        */
+        // bind(this)中的this是绑定事件外层作用域的this，即实例对象
+        // oBtn.addEventListener('click', this.Handle.bind(this))
+
+        //<button onclick="console.log(this)">test</button>  this指向button节点
+
+       
+        /**5.1、call()
+         * testCall.call()：call()执行相当于执行testCall()，只是this指向有区别。testCall()的
+调用者是window，因此函数中的this指向window。testCall.call()执行，this指向call()的调用者testCall()。
+call()可以将testCall()中的this改为call()的第一个参数。因此call()的第一个参数必须是{}/[]/function
+等引用值，不然没有意义。
+         * call()的第二个参数开始，是testCall()函数的实参列表。
+         * */ 
+        function testCall () {
+            console.log("***%%%",this, arguments)  //this指向{}
+            return true
+        } 
+
+        testCall()
+
+        testCall.call({
+            a: 1,
+            b: 2
+        },"张三", "李四")
+
+        // ES6模块中自动使用严格模式，即this就是undefined。非严格模式中this指向window
+        testCall()
+
+        Function.prototype.myCall = function (ctx) {
+            // ctx是context的意思，即上下文。参数ctx表示对象，ctx => {a: 1, b: 2}
+            // 必须保证ctx是引用值，因此通过Object()来转化。如果ctx不存在，则默认为window。
+            // this => testCall()/window => ctx
+            ctx = ctx ? Object(ctx) : window
+            /*myCall()方法的调用者是testCall()，因此myCall()方法中的this指向testCall()
+ctx是对象，给ctx添加函数属性originFn，并将this赋给originFn。因此，ctx.originFn就是原函数testCall()
+可是当执行originFn()的时候，originFn()中的this就指向它的调用者ctx。originFn()和testCall()都是引用值
+执行originFn()就相当于执行testCall()。但此时执行originFn()，myCall()的this指向的就是ctx而非testCall()
+            */ 
+            ctx.originFn = this;
+            let args = []
+
+            // 第二步：获取myCall()的第二个到最后的参数，并作为testCall()的实参。从arguments的第2位开始。
+            for (let i = 1; i < arguments.length; i++ ) {
+                /*现将字符串arguments[i]放入args数组中，作为实参列表放入originFn()的形参列表。
+                即args = [arguments[1]，arguments[2]....]。转化为字符串的目的是便于eval()执行
+                */ 
+                args.push('arguments[' + i + ']')
+            }
+
+            /**' + args + '相当于args.toString()，即将数组args转换为字符串，结果为
+arguments[1], arguments[2], ...。即去掉外面的[]，只留下字符串元素。
+             * ctx.originFn(' + args + )相当于是ctx.originFn(arguments[1], arguments[2])
+这样就将args数组中的元素作为originFn()的实数
+             * eval()可以执行字符串的程序。所以不仅参数是字符串，ctx.origin()也要变成字符串。
+             * eval()执行完后相当于ctx.originFn()执行完，也就是相当于testCall()执行完。
+如果testCall()中有返回值，则用变量接收eval()的执行结果
+             * 如果push()不用字符串，ctx.orginFn()不用字符串，相当于是
+ctx.originFn([arguments[1], arguments[2]])，这肯定是执行不了的。如果push()用字符串，
+ctx.orginFn()不用字符串，相当于是ctx.originFn(['arguments[1]', 'arguments[2]'])。
+如果push()不用字符串，ctx.orginFn()用字符串，相当于是
+'ctx.originFn([arguments[1], arguments[2]])'。
+             * 
+             * */ 
+            let ret = eval('ctx.originFn(' + args + ')')
+            // 最后删除ctx.originFn
+            delete ctx.originFn
+
+            // 将eval()的结果返回出去，相当于是把testCall()的结果返回出去。
+            return ret
+        }
+
+        testCall.myCall({
+            a: 1,
+            b: 2
+        },"张三", "李四")
+
+        /**5.2、apply()
+         * 1、函数.apply()执行，apply()执行，相当于是函数执行，只是this指向发生了改变。
+         * 2、apply()第一个参数是引用值，作用和call()第一个参数相同。apply()的第二个参数是数组，
+也就是函数的实参数组。如果参数2是对象、function、undefined、null，不会报错但arguments.length等于0。
+如果参数2是原始值，则报错。apply()只取到第二个参数，忽略第三个及其以后的参数。
+         * */ 
+
+        function testApply () {
+            console.log("&&&",this, arguments)
+        }
+
+        testApply.apply({
+            a: 1,
+            b: 2 
+        }, [3, 4, 5])
+
+        function myTypeOf (value) {
+
+            if (value = null) {
+                return 'null'
+            }
+
+            return typeof(value) === 'object' 
+            ? 
+            {
+                '[object Object]': 'object',
+                '[object Array]': 'array',
+                '[object Number]': 'obj_number',
+                '[object String]': 'obj_string',
+                '[object Boolean]': 'obj_boolean',
+            }[({}).toString.call(value)]
+            :
+            typeof(value)
+        };
+
+        Function.prototype.myApply = function (ctx, args) {
+            ctx = ctx ? Object(ctx) : window;
+            ctx.originFn = this;
+
+            // args非对象类型，非function类型，即为原始值、undefined。
+            if (typeof args !== 'object' && typeof args !== 'function') {
+                throw new TypeError ('CreateListFromArrayLike called of ...')
+            }
+
+            //如果args不存在或者args类型不是数组，则apply()只转变this指向，然后运行原函数。
+            if (!args || myTypeOf(args) !== 'Array') {
+                return ctx.originFn()
+            }
+
+            // args存在且为数组，则apply()转变this指向并将args作为原函数的实参执行。
+            let ret = eval('ctx.originFn(' + args + ')');
+            delete ctx.originFn;
+            return ret;
+        }
+
+        testApply.myApply({
+            a: 1,
+            b: 2 
+        }, [3, 4, 5])
+
+
+        /**5.3、bind()
+         * fun.bind()，bind()执行后，fun并不会执行，而是返回一个新的函数。
+         * fun.bind()第一个参数是改变fun的this指向。第二个及其以后的参数都是fun的实参，它的格式
+和call()相同。bind()可以分离fun的参数，bind()接收一部分参数，返回的新函数接收另一部分参数。
+         *new fun.bind()返回的新函数，新函数中的this指向fun，实例对象也继承了fun的原型属性和方法。 
+         * */ 
+
+        function testBind (user, car) {
+            console.log(`${user} 刚买了一辆 ${car} 车`);
+            console.log("^^^",this, arguments);
+        }
+
+        testBind.prototype.myLove = '李四'
+
+        const tBind = testBind.bind({
+            a: 1,
+            b: 2
+        }, "张三")
+
+        tBind("劳斯莱斯")
+
+        const newTBind = new tBind("劳斯莱斯");
+        console.log(newTBind)  //newTBind是testBind()构造的实例对象，而不是tBind()构造的实例对象
+    
+        Function.prototype.myBind = function (ctx) {
+            // this -> 调用函数 -> ctx
+            // 保存原函数
+            let originFn = this;
+            /*获取arguments中从第二个到以后的元素，它就是函数的部分实参。返回的新函数中还有另一部分的参数。
+            slice()的this原本只想Array，可我需要浅拷贝arguments，因此使用call()改变this指向。
+            */ 
+            let args = Array.prototype.slice.call(arguments, 1);
+            // 圣杯模式的原型传递中介函数
+            let _tempFn = function () {}
+
+            // myBind()返回的是函数
+            let newFn =  function () {
+                // 获取返回的新函数中的参数列表
+                let newArgs = [].slice.call(arguments)
+                /**通过apply()改变this指向，然后再执行原函数。从而实现this指向的改变。
+                 * args.concat(newArgs)合并args和newArgs参数数组
+                 * 判断this是否由newFn()构造出来的，如果是则使用this
+                 * 如果new 了返回的新函数，那么this就是由返回的新函数构造出来的实例对象，相当于是实例化了
+                 * 如果没有new，那么this还是指向myBind()传递过来的ctx，即object 
+                 * */ 
+                return originFn.apply(this instanceof newFn ? this : ctx, args.concat(newArgs))
+            }
+
+            // 将函数的原型和返回的新函数的原型指向相同的引用。
+            // newFn.prototype = this.prototype
+            _tempFn.prototype = this.prototype;
+            newFn.prototype = new _tempFn();
+            return newFn;
+        }
+
+
+        const tMyBind = testBind.myBind({
+            a: 1,
+            b: 2
+        }, "张三")
+
+        tMyBind("劳斯莱斯")
+        const newTMyBind = new tMyBind("劳斯莱斯");
+        console.log(newTMyBind)
+
+
+
+        
+        // 5、链式调用。对象中this指向对象本身，通过返回this，就相当于是继续调用对象中的方法，因此可以实现链式调用。
+        let sched = {
+            wakeup: function () {
+                console.log('Running');
+                return this;
+            },
+            morning: function () {
+                console.log('Going shopping')
+                return this;
+            },
+            noon: function () {
+                console.log('studying')
+            }
+        }
+
+        sched.wakeup().morning().noon()
+    </script>
+</body>
+
+</html>

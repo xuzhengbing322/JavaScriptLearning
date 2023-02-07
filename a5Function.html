@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        /*1、function简介
+            function是一个固定的功能或者是程序段被封装的过程，在这个封装体中需要一个入口和一个出口。
+入口就是参数，出口就是return。当需要使用这个功能时，就调用这个函数。可见，function并不是存储数据，
+而是操作数据。
+            编程基本原则：高内聚，低耦合。高内聚是指开发的功能模块的独立性比较强，最好一个模块独立完成
+一个功能。低耦合是指将重复的代码抽离成一个独立的功能模块，来完成一个特定的功能。
+            函数定义的两种方式：1、函数声明：function funName (){}。这种方式通常用于export。
+2、函数表达式：const funName ()=>{}。这种方式更符合编程思想。
+        */
+
+        //通过函数表达式定义的函数，它的函数名只在函数体中有调用函数的功能，在全局环境中函数名不存在。
+        let test = function test1() {
+            let a = 1,
+                b = 2;
+            console.log(a, b)
+            // test1()  //无限输出1，2
+        }
+        console.log(test.name) //test1
+        test() //1,2
+        // test1()  //test1 is not defined
+
+        // 匿名函数表达式。
+        let fun = function () { }
+
+        /*2、函数的形参和实参
+            函数形参仅用于占位，实参和形参之间存在映射关系。当函数调用的时候，形参接收实参传递过来的值。
+形参相当于是函数体中声明的临时变量，值由实参赋予。实参和形参按照顺序赋值。当形参多于实参时，未赋值的形参
+就是undefined。实参多于形参，也不报错。
+            形参也可以设置默认值。如果要使用形参的默认值，则实参设置为undefined。
+            每个函数都有return。return既有终止函数执行的作用，又有返回函数执行结果的作用。
+未明确写return的函数系统会默认函数return undefined。    
+            window和return的区别：window.prop = xx 实现将xx放入全局执行上下文中，但window不能
+终止函数。在全局上下文中调用prop就能调用xx。return xx 实现将xx放入函数调用者的执行上下文中，并且终止函数。
+        */
+        // 例子二：累加实参
+        function sum() {
+            let a = 0;
+            for (let i = 0; i < arguments.length; i++) {
+                a += arguments[i]
+            }
+            console.log(a)
+        }
+
+        sum(1, 2, 3, 4, 5, 6) //21
+
+        /*3、递归函数
+            递归函数是指在函数体中，在某种条件下再次调用函数自身，直至达到某种条件才不再次调用函数自身。
+可见递归函数中必须有终止重复调用函数自身的判断条件。
+            递归函数返回值的特性：函数再次调用的“位置”，就是函数执行结果返回的地方。根据这个特性，
+递归函数能很好的解决对象层次较深的问题。
+        */
+        function fact(n) {
+            if (n === 1) {
+                return 1
+            }
+            return n * fact(n - 1)
+        }
+        console.log(fact(5))
+        /*
+        fact(5) = 5 * fact(4) => fact(5) = 5 * 4 * fact(3) => fact(5) = 5 * 4 * 3 * fact(2)
+fact(5) = 5 * 4 * 3 * 2 * fact(1) => fact(5) = 5 * 4 * 3 * 2 * 1
+        */
+
+
+
+        /*4、立即执行函数
+        表达式：1、任何东西被()括起来后，它都会变成表达式。2、+、 -、 !、 ||、 &&也能将函数声明
+变成函数表达式。
+        函数表达式就可以通过执行符号()执行，即为立即执行函数。当函数表达式被定义时，它就会立即执行，
+执行完成以后立即释放。由此可见，立即执行函数没有函数名，即便有也会被忽略，因为它无需函数名来调用函数。
+        立即执行函数一般会在前面加; 表示断句。多个立即执行语句如果没有;断开，就会报错。
+        立即执行函数的作用：解决污染全局问题和模块间相互依赖的问题。函数在执行的时候会有自己的作用域
+和执行期上下文。全局作用域无法直接访问函数作用域中的内容。程序员在立即执行函数中编写代码，相当于是在
+函数作用域中编写代码。最后在通过return {}将函数返回值抛到全局作用域中。抛出{}就形成了闭包。
+当立即执行函数执行完后，函数就会被销毁。可是由于形成了闭包的原因，函数的作用域并没有被销毁。闭包并不是
+直接存在于全局作用域下面的，而是存在于函数作用域，只不过闭包将函数作用域拉到全局作用域中。然后在全局作用域
+中通过变量接收return的{}。这样就可以通过变量来访问立即执行函数中的变量和函数。当模块A需要模块B中的变量时，
+就将接收了模块B返回值的全局作用域中的变量b，通过实参传递给模块A的立即执行函数。这样模块A就能使用模块B中的
+变量了，即b.xxx。由此，不仅解决了污染全局的问题，而且模块之间可以相互依赖了。由此可见，模块独立并且可相互
+依赖。
+        */
+        // 立即执行函数
+        let num = (function (a, b) {
+            return a + b
+        })(1, 2)
+        console.log(num) //3
+
+        // 函数表达式
+        var test2 = function () {
+            console.log('d') //d
+        }()
+            // + - ！
+            + function test3() {
+                console.log('a') //a
+            }()
+
+        2 && function test4() {
+            console.log('b') //b
+        }()
+
+        undefined || function test5() {
+            console.log('c') //c
+        }()
+
+        /*这种情况不会报错也不会执行。test6是函数声明，无法通过()自执行。当()中传了参数，系统会以为
+(6)是表达式，而非立即执行符号。因此不会报错。如果没有参数，就会报错。
+        */
+        function test6(a6) {
+            console.log(1)
+        } (6)
+
+        // 模块化开发。 自执行函数相当于是一个伪全局，这样写可以防止污染全局。
+        let initProgrammer = (function () {
+            let Programmer = function () { }
+            Programmer.prototype = {
+                name: '程序员',
+                tool: '计算机',
+                work: '编写应用程序',
+                duration: '10个小时',
+                say: function () {
+                    console.log(
+                        `我是一名${this.myName}${this.name}，我的工作是用${this.tool}${this.work}，
+                    我每天工作${this.duration}，我的工作需要用到${this.lang.toString()}。`
+                    );
+                }
+            }
+            function FrontEnd() { }
+            function BackEnd() { }
+
+            // 圣杯继承
+            function inherit(Target, Origin) {
+                function Buffer() { }
+                Buffer.prototype = Origin.prototype;
+                Target.prototype = new Buffer()
+                // 继承后，Target.prototype.constructor = Origin，因此需要变为本身。
+                Target.prototype.constructor = Target
+                Target.prototype.super_class = Origin  //保存继承源，以便找到真正继承的构造函数。
+            }
+
+            inherit(FrontEnd, Programmer);
+            inherit(BackEnd, Programmer);
+
+            FrontEnd.prototype.lang = ['HTML', 'CSS', 'JavaScript'];
+            FrontEnd.prototype.myName = '前端';
+
+            BackEnd.prototype.lang = ['Node', 'Java', 'SQL'];
+            BackEnd.prototype.myName = '后端'
+
+            return {
+                FrontEnd: FrontEnd,
+                BackEnd: BackEnd
+            }
+        })()
+
+        let frontEnd = new initProgrammer.FrontEnd();
+        let backEnd = new initProgrammer.BackEnd();
+
+        frontEnd.say();
+        backEnd.say();
+
+        //插件的标配：立即执行函数用于隔离作用域，防止污染全局作用域。自执行函数要在window环境下执行
+        ; (function () {
+            var Slider = function (opt) { }
+            Slider.prototype = {}
+            window.Slider = Slider;
+        })()
+
+        var slider = new Slider({})
+
+
+        /*5、构造函数 -> 5.1、构造函数的this
+            构造函数和普通函数几乎相同，区别在于：1、书写形式。2、构造函数用于构造实例对象，普通函数用于
+实现功能。
+            每次构造函数实例化时，都会生成新的实例对象。
+            实例对象的prototype的constructor指向构造它的构造函数。通过new obj.constructor也能
+构造出另一个内容完全相同的实例对象。
+            构造函数的参数一般采用对象形式书写，方便维护。
+            构造函数不实例化，而是直接执行时，构造函数的执行期上下文中的this指向window。当构造函数
+实例化时，构造函数的执行期上下文中的this会指向实例对象。相当于在构造函数顶部添加let this = {}语句。
+然后，函数体中执行的this.xxx = xxx语句，相当于是给实例对象添加属性和方法。因此，构造函数里面的属性和方法
+必须通过this.xxx来书写。调用对象的属性和方法必须指明对象，因此调用这些属性也需要this.xxx。表示调用
+实例对象中的属性和方法。最后构造函数执行完后会默认return this，将实例对象返回出去，赋给变量。这个变量
+保存着实例对象的指针。当调用变量时，就根据这个指针去访问堆内存中相应的实例对象。
+            如果构造函数写有return number/string/boolean等原始值，则返回的依旧是实例化对象。
+如果写有return {}/[]/function(){}等引用值，则返回的就是{}/[]/function(){}。
+        */
+        function Teacher(opt) {
+            // let this = {}
+            this.name = opt.name;
+            this.sex = opt.sex;
+            this.drive = function () {
+                console.log(`i like drive`)
+            }
+            // return this
+        }
+        let teacherOne = new Teacher({
+            name: '刘一',
+            sex: '男'
+        })
+        let teacherTwo = new Teacher({
+            name: '徐二',
+            sex: '女'
+        })
+        teacherOne.name = '孙六';
+        console.log(teacherOne, teacherTwo)
+
+
+        let teacherThree = new teacherTwo.constructor({
+            name: '徐二',
+            sex: '女'
+        })
+        console.log("$$$", teacherThree)
+
+        // 案例一：构造函数的封装和耦合
+        function Compute() {
+            let res = 0;
+            this.plus = function () {
+                loop(arguments, 'add', res)
+            }
+            this.times = function () {
+                res = 1;
+                loop(arguments, 'mul', res)
+            }
+
+            function loop(args, method, res) {
+                for (let i = 0; i < args.length; i++) {
+                    let item = args[i];
+                    if (method === 'add') {
+                        res += item
+                    } else if (method === 'mul') {
+                        res *= item
+                    }
+                }
+                console.log(res)
+            }
+        }
+
+        let compute = new Compute();
+        compute.plus(2, 4, 6);   //12
+        compute.times(3, 5, 7);   //105
+
+
+        // 案例二：构造函数中调用构造函数
+        function Car(opt) {
+            this.brand = opt.brand;
+            this.color = opt.color;
+            this.displacement = opt.displacement
+        }
+
+        function Person(opt) {
+            this.name = opt.name;
+            this.age = opt.age;
+            this.income = opt.income;
+            this.selectCar = function () {
+                // Person的GO中有Car，所以它可以实例化Car。
+                let myCar = new Car(opt.carOpt)
+                console.log(`${this.name}挑选了一辆排量为${myCar.displacement}的${myCar.color}${myCar.brand}`)
+            }
+        }
+
+        let jone = new Person({
+            name: '约翰',
+            age: 39,
+            income: '20k',
+            carOpt: {
+                brand: '马自达',
+                color: '红色',
+                displacement: '2.0'
+            }
+        })
+
+        jone.selectCar();  //约翰挑选了一辆排量为2.0的红色马自达
+
+
+        /*6、类
+            类的本质就是构造函数，类中有构造器、属性和方法。类应该被理解为容器/作用域/模块。
+            类中的constructor就是构造函数的constructor，用于存放非静态的属性和方法，简化实例化的过程。
+类中的方法和属性都是静态的，存放在类的prototype中。类的实例对象的__proto__属性指向类的prototype。
+实例对象通过原型链继承类的静态属性和方法。
+        */
+        class TestClass {
+            constructor() {
+                this.test = function () {
+                    console.log('none-static: ' + this)
+                }
+
+            }
+            test() {
+                console.log('static: ' + this)
+            }
+        }
+        const testObj = new TestClass()
+        testObj.test()  //none-static: [object Object]
+        console.log(testObj)
+
+
+        /*6.1、类的继承
+            Son继承Father。当实例化Son时，自动执行Son.constructor()，再调用super()。super()
+会生成实例对象，并让this指向Son的实例对象。然后再执行Father.constructor()，给Son的实例对象添加属性
+和方法。然后再执行Son.constructor()，给Son的实例对象添加属性和方法。实例对象的prototype先是Son的
+prototype，然后再是Father的prototype。
+            super()之前不能写this.xxx语句。因为先调用this.xxx就会生成实例对象。再去调用super()，
+就又会生成另一个实例对象，这显然是错误的。
+        */
+        class Father {
+            constructor() {
+                this.age = 44;
+            }
+
+            swim() {
+                console.log('Go swimming!')
+            }
+        }
+
+        class Son extends Father {
+            constructor() {
+                super()
+                this.hobby = 'traval'
+            }
+
+            study() {
+                console.log(this);
+                this.swim()
+            }
+        }
+
+        const son = new Son();
+        son.study();
+        console.log(son)
+
+
+        /*7、Function()：构造函数能实例化出function。构造函数的参数就是function的参数和执行语句。
+        * Function()实例化出来的function总是在全局作用域中，且不会创建闭包。
+        */ 
+        // const oneFun = new Function('a', 'b', 'c', 'console.log(a + b + c)')
+        // testFun(1, 2, 3)  //6
+       
+
+        let aFun = 1,
+            bFun = 2;
+
+        function twoFun() {
+            let bFun = 3;
+            return new Function('cFun', "console.log(aFun + bFun + cFun)")
+        }
+        let tFun = twoFun()
+        tFun(4)  //7
+
+        // 两者调用方式的效果相同。Function即使函数也是函数对象。
+        let t1 = new Function('console.log("t1")');
+        let t2 = Function('console.log("t2")');
+        t1();  //t1
+        t2();   //t2
+        console.log(t1.__proto__ === Function.prototype) //true
+        console.log(Function.prototype === Function.prototype)  //true
+
+
+        
+        // 案例：
+        //构造函数
+        function Foo() {
+            // 全局变量赋值了一个函数。如果Foo()没有执行，下面的赋值行为是肯定不进行的
+            getName = function () {
+                console.log(1)
+            };
+            return this;  //直接执行this指向window，new的话this指向实例对象。
+        }
+
+        // 函数Foo上的静态方法 -> 一个函数对象上的方法和属性
+        Foo.getName = function () {
+            console.log(2);
+        }
+
+        // 扩展函数原型上的方法
+        Foo.prototype.getName = function () {
+            console.log(3)
+        }
+
+        // 给全局变量赋值为一个匿名函数
+        var getName = function () {
+            console.log(4)
+        }
+
+        // 函数声明
+        function getName() {
+            console.log(5)
+        }
+        // 执行Foo()函数上的静态方法
+        Foo.getName(); //2
+        // GO中getName: undefined -> function getName(){} -> function(){console.log(4)} 
+        getName() // 4 this => window
+        // GO中getName: undefined -> function getName(){} -> function(){console.log(4)} -> function() {console.log(1)}
+        // Foo()返回值上面的getName()
+        Foo().getName(); //1  Foo()执行返回this，this指向window，所以执行window.getName()
+        getName();  //1   
+        new Foo.getName(); //2  Foo.getName()静态函数，并不是构造函数，new没有作用，只是普通的执行。只不过如果里面有this，那this将指向实例对象
+        // 相当于是let foo = new Foo()  foo.getName() //即Foo.prototype.getName
+        new Foo().getName(); //3
+        // new Foo().getName(); 的结果并不是构造函数，因此new没有意义。
+        new new Foo().getName(); //3
+
+
+        // 函数和方法极为相似，如果对象和原型对象中的属性值是函数，则这个函数被称为方法，对象属性名为方法名。
+    
+    
+        /**8、new
+         * 1、创建构造函数。2、实例化构造函数。3、接收构造函数中的返回值。
+         *new : 1、this -> {} 
+2、this.a, this.b -> {
+                        a: va, 
+                        b: vb, 
+                        __proto__:Function.prototype: {
+                                                        prototypeAtrr: xxx
+                                                        constructor: Function
+                                                        __proto__: xxx
+                                                    }
+                    }
+         *关键字new 没办法直接重写，所以使用myNew()来实现重写。
+         */
+         function TestNew (a, b) {
+            this.a = a;
+            this.b = b;
+        } 
+
+        TestNew.prototype.add = function () {
+            return this.a + this.b;
+        };
+
+        const testNew = new TestNew(1, 2);
+
+        console.log(testNew)
+
+        function myNew () {
+            //aray.shift(arr)，默认截取数组的第一个元素。arguments[0]就是构造函数
+            let constructor = [].shift.call(arguments),
+            //new会创建实例对象，因此声明{}作为实例对象。
+                _this = {};
+
+            // new中，实例对象原型继承构造函数的prototype。
+            _this.__proto__  = constructor.prototype
+            /**new中，会将构造函数的this指向改为实例对象。arguments已经删除了第一项，剩下的都是参数
+             * constructor执行就会给_this实例对象当中添加属性。如果执行完之后，有返回值，且这个返回值
+             * 是引用值，则new 返回的结果是这个引用值。如果返回的结果是原始值，则new 返回的结果是
+             * 实例对象
+             * */ 
+            let res = constructor.apply(_this, arguments)
+
+            return typeof(res) === 'object' ? res : _this
+        }
+
+        const testMyNew = myNew(TestNew, 1, 2)
+
+        console.log("testMyNew",testMyNew)
+
+
+        /**9、typeof和Object.prototype.toString.call()不能够检测到实例对象是否由该构造函数/类构造
+         * instanceof可以校验出实例对象是否由该构造函数/类构造出来。
+         * instanceof 只要校验的构造函数/类出现在实例对象的原型链中，返回值就是true.
+         * */ 
+
+         class TestInstanceOf {}
+
+         let testInstanceOf = new TestInstanceOf()
+         console.log(testInstanceOf instanceof TestInstanceOf) //true
+
+        //  特例 arr object
+        let arrInstance = [1,2,3,4]
+        console.log(arrInstance instanceof Array) //true
+        console.log(arrInstance instanceof Object) //true
+        console.log(arrInstance.__proto__ === Array.prototype) //true 
+        console.log(arrInstance.__proto__ === Object.prototype) //false
+        console.log(arrInstance.__proto__.__proto__ === Object.prototype)  //true
+        console.log(Object.prototype.__proto__) //null
+
+        // target是实例对象，Type是构造函数/类
+        function myInstanceOf (target, type) {
+                type = type.prototype;
+                target = target.__proto__;
+
+                // 一直循环，直至找完原型链
+                while (true) {
+                    if (target === null) {
+                        return false;
+                    }
+
+                    if (target === type) {
+                        return true
+                    }
+
+                    //依次循环target实例对象的原型链，直至找到或者到原型链的顶部 
+                    target = target.__proto__;
+                }
+        }
+
+        console.log(myInstanceOf(testInstanceOf, TestInstanceOf)) //true
+
+    
+    </script>
+</body>
+
+</html>

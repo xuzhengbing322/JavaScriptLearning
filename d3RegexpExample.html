@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 禁止向输入框输入空格 -->
+    <!-- this指的是input -->
+    <!-- <input type="text" id="test" onkeyup="test(this)" />
+    <button>点击</button>
+    <script type="text/javascript">
+        let oTest = document.getElementById('test');
+
+        function test(obj) {
+            let reg = /\s/;
+            obj.value = obj.value.replace(reg, '');
+        }
+    </script> -->
+
+    <!-- 对身份证进行验证 -->
+    <!-- <input type="text" id="test" />
+    <button onclick="test()">点击</button> 
+    <script type="text/javascript">
+        let oTest = document.getElementById('test')
+
+        // 51382219980322889X
+        function test() {
+            let val = oTest.value,
+                reg = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[1-9Xx]$/,
+                pass = reg.test(val);
+            console.log(pass)
+        }
+    </script> -->
+
+
+    <!-- 密码强度问题 
+    至少六位，包含1个大写、1个小写、1个数字、1个特殊
+    多个包含一定要使用?= 正向预查 正向断言
+    -->
+    <!-- <input type="text" id="test" />
+    <button onclick="test()">点击</button> 
+    <script type="text/javascript">
+        let oTest = document.getElementById('test')
+
+        function test() {
+            let val = oTest.value,
+                reg = /^.*(?=.{6,}(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[~!@#$^%*?])).*$/,
+                pass = reg.test(val);
+            console.log(pass)
+        }
+    </script> -->
+
+    <!-- 验证上传的图片
+    <input type="text" id="test" />
+    <button onclick="test()">点击</button> 
+    <input type="file" id="file" onchange="test2(this)" />
+    <script type="text/javascript">
+        let oTest = document.getElementById('test')
+
+        function test2(obj) {
+            let val = oTest.value,
+                reg = /(\.jpg|\.gif|\.png|\.jpeg)/,
+                pass = reg.test(val);
+            console.log(pass)
+        }
+    </script> -->
+
+    <!--校验用户名 -->
+    <!-- <input type="text" id="test" />
+    <button onclick="test()">点击</button> 
+    <script type="text/javascript">
+        let oTest = document.getElementById('test')
+
+        //xxxxxxx@xxxx.com.cn
+        function test() {
+            let val = oTest.value,
+                reg = /^([0-9A-z_-])+\@([A-z0-9_\-\.]+\.([A-z]{2,4}))$/,
+                pass = reg.test(val);
+            console.log(pass)
+        }
+    </script>  -->
+
+
+ <!-- <script>
+    let str = 'abcabc',
+        // 子表达式不仅能匹配abc，还能匹配各自括起来的东西。即捕获分组。
+        // ?:可以不捕获该子表达式，即不捕获分组。这是match()方法的特有功能。
+        reg = /(?:a)(b)(c)/;
+    console.log(str.match(reg)) //['bc', 'b', 'c']
+ </script> -->
+
+</body>
+
+</html>

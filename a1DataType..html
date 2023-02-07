@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+            1、变量的分类和存储原理
+            javascript是弱类型语言，它根据变量值来推断变量的类型。因此，不同类型的变量可以相互赋值。
+typescript是强类型语言，变量的类型都由用户定义，不同类型的变量不可以相互赋值。
+            javascript的数据分为原始值（基本数据类型）和引用值（引用数据类型）。
+            基本数据类型：number、string、boolean、undefined、null。
+            引用数据类型：function、object、array、date、RegExp。
+            程序的任何数据和方法都需要通过变量来存储。
+            内存分为栈内存和堆内存。栈内存存储原始值和指针，指针指向堆内存中对应的引用值。变量名就是
+栈内存的空间名称。栈内存存储的原始值不可被更改，只会被创建和销毁。因此声明变量以及给变量赋值都是在栈内存
+中重新开辟空间，然后存储新的原始值或指针。   将引用值赋给变量，就是在栈内存中开辟空间，然后存储指向引用值
+在堆内存中地址的指针。当使用该变量时，就相当于是通过变量在栈内存中存储的指针，找到存储在堆内存中的具体值。
+因此，可能出现多个变量存储相同的指针。通过某个变量修改引用值后，调用其他变量得到的都是修改后的值。
+        */
+        //基本类型
+        let a = 3; //在栈内存中开辟一个空间，空间名称为a，空间存储的值为3。
+        let b = a; //在栈内存中再开辟一个空间，空间名称是b，复制一份空间a存储的值到空间b中。此后，a和b没有关系
+        a = 1;  //在栈内存中再开辟一个空间，空间名称是a，空间存储的值是1。由于空间名称不能重名，因此原来的空间a被销毁。但原空间a存储的值会被保存，不会被销毁。
+        //引用类型
+        let arr = [1, 2, 3, 4] //栈内存开辟一个空间，空间名称为arr，空间存储的是指针，这个指针指向[...]存放在堆内存的地址。
+        let arr2 = arr //栈内存再开辟一个空间，空间名称为arr2，空间存储着和arr相同的指针。
+        arr.push(5) //向arr存储的指针指向的堆内存中添加元素5。因为arr和arr2存储着相同的指针，因此arr2的值也变了。
+        arr = [1, 2] //栈内存再开辟一个空间，空间名称为arr，空间存储的指针指向堆内存中的[1, 2]
+
+        /*2、变量声明
+            变量的声明方式有var、let、const、import、class、function。
+            let和const的特点：1、let和const为js新增了块级作用域。2、let和const不允许在同一作用域
+中声明重名变量、函数和参数。3、let和const不存在变量提升。4、暂时性死区：在代码块中，let命令声明变量之前的区域
+都是“死区”，变量不可用。变量只能在声明之后使用。5、const定义的变量必须初始化赋值，变量指向的内存地址不可
+变动。因此，若const声明的变量是原始值，则变量值不可修改。若const声明的变量是引用值，则变量值整体不可修改
+但是可以修改局部值。let定义的变量可以修改。
+            问题：为什么需要块级作用域：1、var是全局作用域，且存在变量提升。导致内部变量可能会覆盖外层
+变量。2、用来计数的循环变量泄漏成为全局变量。3、有了块级作用域，外层作用域无法读取内层作用域的变量。
+            var和function声明的全局变量是顶层对象的属性，可以通过windox.attributeName调用。
+let、const和class定义的全局变量不是顶层对象的属性。无法通过windox.attributeName调用。
+        */
+        const x = [{ id: '001' }, 'jake', ['join']];
+        x[0].id = '002';
+        x[1] = 'tom'
+        x[2] = ['roes']
+        console.log(x)  //[ { id: '002' }, 'tom', [ 'roes' ] ]
+
+
+
+        /*3、判断数据类型
+            typeof(xxx)可以判断number、string、boolean、undefined、function、object。
+然而，typeof将object、array、Date、RegExp、null都判断为object。
+            Object.prototype.toString.call(xxx)可以判断number、string、boolean、undefined、
+function、object、array、Date、RegExp。方法返回结果的格式是[object xxxxxx]
+            typeof 和 Object.prototype.toString.call(xxx)判断结果都是string类型的数据。
+            Object.prototype.toString()的执行期上下文是Object，因此需要call()将执行期上下文
+改为xxx，从而使用toString()方法判断参数的数据类型。
+        */
+        console.log(typeof c)  // undefined      未定义的参数的类型是undefined。
+        console.log(typeof (typeof (c)))  //string   typeof判断结果都是string类型。
+        console.log(typeof (null))  //object  这是历史遗留问题，以前null是空对象的指针，现在才是原始值
+        console.log(typeof (NaN))  //number   NaN的数据类型是number
+
+        //检测函数
+        function myTypeof(val) {
+            // 利用typeof检测val数据类型
+            let type = typeof (val),
+                toStr = Object.prototype.toString;
+            // 以对象的形式整理 Object.prototype.toString.call()的结果
+            let resSet = {
+                '[object Object]': 'object',
+                '[object Array]': 'array',
+                '[object Number]': 'obj_number',
+                '[object String]': 'obj_string',
+                '[object Boolean]': 'obj_boolean',
+                '[object Data]': 'data',
+                '[object RegExp]': 'regexp',
+            };
+
+            if (val === null) {
+                return 'null';
+            } else if (type === 'object') {
+                let res = toStr.call(val);
+                // 以toString.call()返回值为键名，resSet[res]返回键名所对应的值。
+                return resSet[res];
+            } else {
+                return type
+            }
+        }
+
+        console.log(myTypeof(/\w/))  //regexp
+        console.log(myTypeof(new String()))  //obj_string
+
+        /*4、数据类型转换
+        4.1、显示数据类型转换
+            Number()将参数转换成number类型。转换规则：1、string类型的变量，若包含字母，则返回值为NaN。
+2、string类型的变量，若不包含字母，则转化为去掉首尾0的number。3、null转化为0。undefined转化为NaN。
+4、boolean类型的变量，若为true，则转化为1；若为false，则转化为0。
+            parseInt(params1,params2)将参数转换成整型，原理和Number()相似。params1是待转换变量，
+params2设置转换的进制，默认是十进制。parseInt只管将数字转换成整型，因此只有number和数字类型的string
+才能转换，其他的都是NaN。
+            parseFloat()将参数转换成小数。
+            isNaN()判断一个参数（字符串）是否不能转换为数值类型。如果不能转换为数字，返回true。
+如果能转换为数字，返回false。
+            变量.toString()将变量的值转化为字符串类型
+            String()将变量的数据类型强制转换成字符串类型
+
+        4.2、 隐式类型转换
+            运算等级：() > 乘除取余 > 加减 > 赋值
+            为假的情况： false、undefined、 ''、 null、 NaN。  除此以外都是真  
+            +  如果运算中有字符串，则将非字符串数据原原本本的转化为字符串数据，然后进行拼接。
+            - *  / %  进行数据计算时，将能转化为数字的非number数据转化为number，然后再运算。
+如果运算中有不能转化为数字的非number数据，则输出NaN。
+            > < >= <=  进行比较时，有一个是字符串，另一个是数字，则将字符串转化为数字类型的数据，
+在进行比较。但如果两个都是字符串，则将它们转化为ASCLL码再进行比较。
+            NaN: not a number。NaN是数字类型，表示变量不是数字类型。
+            Infinity： 正无穷 1/0
+            -Infinity：负无穷
+
+        */
+        let d1 = 'null'
+        console.log(typeof (Number(d1)) + '-' + Number(d1))  // number-0
+        let d2 = 'undefined'
+        console.log(typeof (Number(d2)) + '-' + Number(d2))  // number-NaN
+        let d3 = true
+        console.log(typeof (parseInt(d3)) + '-' + parseInt(d3))  //number -NaN
+
+        console.log(1 + 3)  //4
+        console.log(1 + '1')  //11
+        console.log('2' + '1') //21
+        console.log(true + '1')  //true1
+
+        console.log('2' - 1)  //1
+        console.log('a' - 1)  //NaN
+        console.log(true - 1)  //0
+
+        console.log('2' > 1)  //true
+        console.log('a' > 'b')  //false
+
+        /*typeof(a)是字符串的undefined，为真。 -true：-1。+undefined：NaN，因为undefined无法被
+转换成数字。NaN-1还是NaN，然后再加字符串，就是字符串类型的NaN，所以为真。
+        */
+        if (typeof (a) && (-true) + (+undefined) + '') {
+            console.log('通过了')  //通过了
+        } else {
+            console.log('没通过')
+        }
+        console.log(+undefined)  //NaN
+
+        console.log(!!' ' + !!'' - !!false || '未通过')  //1    ' '：空格字符串是真
+
+        /*
+        5、== 和 ===
+            == != 只看值是否相等，不考虑类型是否相等。
+            ===  !==既要看值是否相等，又要看类型是否相等。
+            ==/===比较不会将string变为number类型，它直接比较''内的值。
+> <= >=会将string变为number再进行比较。
+            NaN与包括自己在内的任何东西都不相等。
+        */
+        console.log(1 == '1')  //true
+        console.log(1 === '1')  //false
+        console.log(undefined == null) //true
+        console.log(undefined === null) //false
+
+        /*
+        6、错误提示
+            错误分为语法错误和通用错误。
+            语法错误：SyntaxError，它的特点就是程序全部都不执行。
+            通用错误：ReferenceError，它的特点是程序会执行错误之前的代码。
+            多个<script>代码块的错误情况：代码块之间不会相互影响，正确的代码块会执行，有错误的代码块会报错。
+        */
+
+        /*
+        7、与&& 、 或|| 非!
+           假：false、undefined、 ''、 null、 NaN。  除此以外都是真  
+           &&：遇到真就往后走，遇到假或走到最后就返回当前的值。 在判断语句中，&&表示判断条件均为真才进入
+判断语句。||：遇到假就往后走，遇到真或者走到最后就返回当前的值。在判断语句中，||表示判断条件有一个为真，就
+进入判断语句。
+           &&和或||返回的是值，可以用做不同情况返回不同值。  在判断语句中才表示true/false
+        */
+        let e1 = 1 && 2 && undefined && 10
+        let e2 = 0 || null || 1 || 0
+        console.log(e1, e2)  //undefined 1
+
+        // 8、逗号运算：返回最后一个数
+        let nums = (2 - 1, 6 + 5, 24 + 1)  //25
+        console.log(nums)
+
+        let fn = (
+            function test20() {
+                return 1;
+            },
+
+            function test21() {
+                return '2'
+            }
+        )()
+        console.log(typeof (fn)) // string
+
+        /*
+        9、包装类
+           原始值没有属性和方法，原则上不能给它添加属性和方法。但当程序员强行给原始值添加属性和方法时，
+系统就会自动将原始值通过new Number()/String()/Boolean()转化为数字对象/字符串对象/布尔值对象。这样
+就能给它添加属性和方法。但转化后，系统无法自动创建变量来保存这个对象。因此如果用户不自定义变量来存储，系统
+就会把这个对象给删了。因此访问原始值的属性返回的就是undefined
+           注意：1、数字对象参与运算后，又会变成原始值。2、undefined和null没有对应的方法将它们转化为对象。
+            
+        */
+        let m = 1; //原始值
+        let n = new Number(m); //原始值转变为数字对象
+        n.len = 1
+        console.log("&&", n) //Number {1, len: 1}
+        let s = n + 1;  //数字对象参与运算后，又会返回到原始值。
+        console.log(s)  //2
+
+        let f = 123;
+        // new Number(123).len = 3
+        console.log(f.len)  //undefined
+        f.len = 3
+        console.log("f=", f, "f.len", f.len)
+        console.log(f.len) //undefined
+
+
+        let name = '张三'
+        name += 10;
+        let type = typeof (name);
+        // let type = new String(typeof(name))
+        if (type.length === 6) { //true
+            // new String(type.text = 'string')   delete
+            type.text = 'string';
+        }
+        console.log(type.text) //undefined
+
+        // ？？？存疑：如何解释字符串.length
+        let g = 'abc'
+        console.log(g.length) //3  length是字符串对象的固有属性。 
+
+        //数组的截断
+        let arrNew = [1, 2, 3, 4, 5]
+        arrNew.length = 3 //[1,2,3]
+        arrNew.length = 6 //[1,2,3, <3 empty items> ]
+        console.log(arrNew)
+
+        /**10、undefined
+         * undefined既是一个原始数据类型，也是一个原始值数据。
+         * undefined是全局对象上的一个属性，window.undefined，这个属性不可写writable false，
+不可配置 configurable false, 不可枚举 enumerable false, 不可用Object.defineProperty()重新
+定义undefined。因此，在全局作用域中，无法将undefined作为变量使用。但是在局部作用域中可以使用undefined
+作为变量使用。因此，undefined不是JS的保留子和关键字。
+         * 系统会给一个未赋值的变量自动赋值为undefined，类型也是undefined。
+         * 函数内部没有显示返回一个值的时候，系统默认给函数返回undefined
+         * */
+
+
+        /**11、相等性判断
+         * ES6版本，有四种相等判断的算法。1、全等 ===。2、等于 ==。3、零值相等 -0 === +0。
+4、同值相等 -0 !== +0   NaN === NaN。
+         * JS中提供有关相等判断的操作方法。1、严格相等 === Strict Equality。
+2、非严格相等 == Loose Equality。3、Object.is(v1, v2) 判断两个参数是否是同一个值。
+         * === 严格相等不进行隐式类型转换，也就是说两者类型相同并且值也相同才算相等，引用值必须是同一指针。
+两个NaN或者是NaN跟其他值都不相等。例：如何定义变量a  a !== a; true => a = NaN。
++0和-0相等，+0 === -0 true。 +Infinity和-Infinity不相等  +Infinity === -Infinity false
+         * == 非严格相等可以进行隐式类型转换，而且等式两边都有可能被转换，转换以后还是用严格相等来进行比较。
+         * 任何对象都和undefiend null不相等。
+         * falsy值：false, 0, +/-0, 8n, "", '', ``, null, undefined, NaN
+         * 同值相等 same-value  -0 !== +0 =>同值相等  NaN === NaN =>同值相等。在同值相等的情况下
+NaN === NaN。同值相等的底层实现是Object.is()。Object.is()是ES6抛出来的方法，ES5并没有暴露JS引擎的
+同值相等的方法。相同的值或者引用值的指针相同，则同值相等为true。同值相等不进行隐式类型转换。也就是说，
+同值相等和严格相等的区别在于-0 !== +0 =>同值相等  NaN === NaN =>同值相等。
+         * 零值相等 same-value-zero +0 === -0
+         */ 
+
+        Object.myIs = function (a, b) {
+            if (a === b) {
+                return a !== 0 || 1 / a === 1 / b; 
+            }
+            return a !== a && b !== b;
+        }
+
+
+    </script>
+</body>
+
+</html>

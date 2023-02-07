@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        /*
+        贪婪模式和非贪婪模式
+        贪婪模式：能多匹配就多匹配。
+        非贪婪模式（？）：能匹配少就不匹配多。
+        */ 
+        let str = 'abcd{{efg}}abcd{{xyz}}',
+            reg = /{{.*}}/g,
+            reg1 = /{{.*?}}/g;
+        console.log(str.match(reg))   //{{efg}}abcd{{xyz}} 
+        console.log(str.match(reg1))   //['{{efg}}', '{{xyz}}']
+
+        let str1 = 'aaaa',
+            reg2 = /\w?/g,
+            reg3 = /\w??/g;
+        console.log(str1.match(reg2))    //['a', 'a', 'a', 'a', '']
+        console.log(str1.match(reg3))    //['', '', '', '', '']
+
+        /*
+        str.replace(one,two)：one表示str里面要被替换的字符串，可以通过正则匹配要被替换的字符串。
+    two表示替换的字符串。
+        replace没有全局匹配的能力，本身只能匹配一次。
+        */ 
+        let str2 = 'JSplusplus',
+            reg4 = /plus/g;
+        let str3 = str2.replace('plus','+');
+        let str4 = str2.replace(reg4,'+');
+        console.log(str3)  //JS+plus
+        console.log(str4)  //JS++
+
+        // xxyy -> yyxx
+        let str5 = 'aabbccdd',
+            reg5 = /(\w)\1(\w)\2/g;
+        console.log(str5.match(reg5))   //['aabb', 'ccdd']
+        //$2的意思是reg5的第二个子表达式，$1的意思是reg5的第一个子表达式。
+        let str6 = str5.replace(reg5,'$2$2$1$1'); 
+        // function是js引擎自动执行，匹配出多少个字符串就执行多少次。   
+        let str7 = str5.replace(reg5,function($,$1,$2){
+            // $是匹配出来的字符串aabb｜ccdd，$1是reg5的第一个子表达式，$2是reg5的第二个子表达式。
+            return $2+$2+$1+$1
+        });
+        console.log(str6)  //bbaaddcc
+        console.log(str7)  //bbaaddcc
+
+
+        // js-plus-plus  -> jsPlusPlus
+        let str8 = 'js-plus-plus',
+            reg6 = /-(\w)/g;
+        let str9 = str8.replace(reg6, function($,$1){
+            return $1.toUpperCase();
+        })
+        console.log(str9)  //jsPlusPlus
+
+        // jsPlusPlus ->js_plus_plus
+        let str10 = 'jsPlusPlus',
+            reg7 = /([A-Z])/g;
+        let str11 = str10.replace(reg7,function($,$1){
+            return '_' + $1.toLowerCase();
+        })
+        console.log(str11)  //js_plus_plus
+
+        // xxyyzz -> XxYyZz
+        let str12 = 'xxyyzz',
+            reg8 = /(\w)\1(\w)\2(\w)\3/g;
+        let str13 = str12.replace(reg8, function($,$1,$2,$3){
+            return $1.toUpperCase() + $1 + $2.toUpperCase() + $2 + $3.toUpperCase() + $3  
+        })
+        console.log(str13)  //XxYyZz
+
+        // aabbcc ->a$b$c$ ->不能使用function
+        let str14 = 'aabbcc',
+            reg9 = /(\w)\1(\w)\2(\w)\3/g;
+        let str15 = str14.replace(reg9, '$1$$$2$$$3$$')  //使用$就写$$，避免误会。
+        console.log(str15)  //a$b$c$
+
+
+        // 注意：正则匹配字符串中的*、？、\、+时，需要添加\x，不然会有语法错误。
+        let str16 = 'aa\\bb\\cc',
+            reg10 = /\\/g;
+        console.log(str16.match(reg10))  //['\\','\\']
+
+        // 
+        let str17 = 'aabbcc',
+            str18 = 'aaaabbbcccccccc',
+            reg11 = /(\w)\1(\w)\2(\w)\3/g,
+            reg12 = /(\w)\1*/g ;  //(\w)\1重复{0,多次}
+        let str19 = str17.replace(reg11, '$1$2$3')
+        let str20 = str17.replace(reg12, '$1')
+        console.log(str19)  //abc
+        console.log(str20)  //abc
+
+
+        // 100000000000 -> 100,000,000,000
+        let str21 = '10000000000000';
+        let str22 = str21.replace(/(\d{3}\B)/g, '$1,')  //\B非单词边界才匹配，匹配后才替换。
+        let reg13 = /(?=(\B)(\d{3})+$)/g
+        let str23 = str21.replace(reg13,',')
+        console.log(str22)  //100,000,000,000
+        console.log(str23)  //10,000,000,000,000
+
+        // 双大括号替换值{{}}
+        let str24 = 'My name is {{name}}. I\'m {{age}} years old',
+            reg14 = /{{(.*?)}}/g;
+        // node和key的名字随便取，只要和{{xxx}}、xxx一一对应即可。
+        // {{xx}}替换的规则就是，将{{xx}}替换成xx变量对应的值。
+        let str25 = str24.replace(reg14, function(node, key){  //node就是{{xxx}},key是xxx
+            // 采用[]的形式访问对象的属性
+            // let obj = {
+            //     name: 'Jone',
+            //     age: 32
+            // }
+
+            // return obj[key];
+            return {
+                name: 'Jone',
+                age: 32
+            }[key]
+        })
+        console.log(str25)  //My name is Jone. I'm 32 years old
+
+        
+    </script>
+</body>
+</html>

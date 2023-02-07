@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*问题一
+        问题：进入判断。
+        if (a === 1 && a === 2 && a === 3) {
+            console.log('you win!!!')
+        }
+
+        问题解析：a === 1相当于访问属性a的值，并判断值是否为1。&&表示多个条件均为真才能进入判断语句。
+因此，属性a是window中的变量，访问属性a时，属性a的值自加1。使用
+Object.defineProperty(window, 'a', {})中的get()对访问属性a进行劫持，每次访问时属性a都自加1。
+        */ 
+        let _default = 0;
+
+        Object.defineProperty(window, 'a', {
+            // 访问a属性的时候就会调用get方法
+            get () {
+                return ++ _default;
+            }
+        }) 
+
+        if (a === 1 && a === 2 && a === 3) {
+            console.log('you win!!!')
+        }
+
+
+        /**问题二：
+         * 问题：在给a赋值后返回特殊的对象。
+         * 
+         * a = 'Object'
+         * a = 'Array' 
+         * 
+         * {
+         *      type: 'Object',
+         *      length: 6
+         * }
+         * {
+         *      type: 'Array',
+         *      length: 5
+         * }
+         * 其他的返回：TypeError: this type is invalid
+         * 
+         * 问题解析：a = 'Object'是在给属性a赋值，但最终属性a的值并非'Object'，而是{...}。因此
+         * 使用Object.defineProperty(window, 'a', {})中的set()对属性a的赋值操作进行劫持。
+         * 注意给对象添加属性，必须保证这个对象之前没有这个属性。
+         * */ 
+
+        // 任何数据都用变量来接收
+        let _defaultTwo = null;
+        Object.defineProperty(window, 'p', {
+            get () {
+                return _defaultTwo;
+            },
+
+            set (newValue) {
+                switch (newValue) {
+                    case 'Object':
+                    case 'Array':
+                        _defaultTwo = {
+                            type: newValue,
+                            length: newValue.length
+                        }
+                        break;
+                    default:
+                        throw new TypeError('This type is invalid')
+                }
+            } 
+        })
+
+        p = 'Object';
+        console.log(p)
+        p = 'Array';
+        console.log(p)
+        // p = '123';
+
+
+
+
+        /**问题三：
+         * 问题：console.log(_ + _ + _ + _);输出结果中将_替换成小写字母  //abcd...z
+         * 
+         * 问题解析：访问_时，返回的值是小写字母，而且小写字母是有顺序的。
+         * */ 
+
+         Object.defineProperty(window, '_', {
+             get () {
+                //  this只想window，查看window中是否有_c属性，如果有就用_c，没有就用a的ASCLL码
+                 this._c = this._c || 'a'.charCodeAt(0);
+                 let _ch = String.fromCharCode(this._c);
+
+                 if (this._c >= 'a'.charCodeAt(0) + 26 ) return;
+                 this._c ++;
+                 return _ch
+             }
+         })
+         console.log(_ + _ + _ + _);  //abcd
+
+        /**问题四：
+         * 要求：
+         * {
+         *  a: 1,
+         *  b: 2,
+         *  c: 3
+         * }
+         * 
+         * for (let k in obj ) {
+         *      obj[k] += 1;
+         * }
+         * 
+         * console.log(obj)
+         * 
+         * {
+         *      a: 3
+         *      b: 3
+         *      c: 5
+         * }
+         *
+         * */  
+
+         let _objde = {
+             a: 1,
+             b: 2,
+             c: 3
+         }
+
+         let objde = {}
+         for (let k in _objde) {
+             Object.defineProperty(objde, k, {
+                 enumerable: true,
+                 writable: k === 'b' ? false: true,
+                 value: ++ _objde[k]
+             }) 
+         }
+
+         for (let k in objde) {
+             objde[k] += 1;
+         }
+
+         console.log(objde)
+    </script>
+</body>
+</html>

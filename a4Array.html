@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*Array对象支持在单个变量名下存储多个元素。可以访问数组中单独的某个值，也可以用数组去操作各项元素。
+        * 数组本质上就是一个对象，数组的序号是键名，元素是键值。
+        */
+        const arr = [1, 2, 3]
+        /*
+            arr = {
+                '0': 1,
+                '1': 2,
+                '2': 3
+            }
+        */
+
+        /*遗留问题：
+        1、单词的意思，
+        2、MDN中所有的数组方法，每个数组的方法都再看一下。
+        3、类数组和数组的区别。类数组有哪些
+        */
+
+        /* 2、数组的常用方法：
+        2.1、改变原数组，不返回新数组的方法
+            1、array.push()：增添元素到数组的末尾，方法返回数组新的长度。
+            2、array.pop()：删除数组末尾的元素，方法返回被删除的末尾元素。
+            3、array.unshift()：添加元素到数组的头部，方法返回数组新的长度。
+            4、array.shift()：删除数组头部元素，方法返回被删除的头部元素。
+            5、array.splice(index, number, prop)：从索引为index的位置开始删除number个元素，
+并在将prop添加到删除项的索引位置。常用于删除和更替数组元素。
+            6、array.sort(function compareFn(a, b) { ... })：给数组元素排序
+            7、array.reverse：方法将数组中元素的位置颠倒。 
+            8、array.copyWithin(target, start, end)：将数组的一部分元素复制到另一部分。
+            9、array.forEach((item, index, array) => {}, thisObj)：操作数组的每个元素。
+            10、array.fill(value, start, end)：方法用一个固定值填充一个数组中从起始索引到终止索引
+内的全部元素。不包括终止索引。
+
+        2.2、返回新数组的方法
+            1、array.map((item, index, array) => {}, thisObj)：操作数组的每个元素。
+            2、array.slice(start, end)：浅拷贝array数组，也可将类数组转化成数组。
+            3、array.filter((item, index, array) => {}, thisObj)：过滤元素，或删除元素。
+            4、array.every((item, index, array) => {}, thisObj)：判断元素是否全部满足判断条件
+            5、array.some((item, index, array) => {}, thisObj)：判断是否有元素满足判断条件
+            6、array.reduce((prev, item, index, array) => {}, thisObj)：归纳符合条件的元素
+            7、array.reduceRight((prev, item, index, array) => {}, thisObj)：从右到左遍历
+            12、array.concat(array, variate, object, funciton ...)：合并数组
+            13、array.flat(depth)：深度递归array中的元素，将数组元素变成普通元素。扁平化数组。
+衍生方法：array.flatMap(function(currentValue, index, array) { ... }, thisArg)
+            14、array.from(arrayLike, (element, index) => { ... } )：方法对一个类似数组或
+可迭代对象创建一个新的，浅拷贝的数组实例。
+            15、array.of(element0, element1)：方法通过可变数量的参数创建一个新的 Array 实例，
+而不考虑参数的数量或类型。
+
+            
+        2.3、返回索引值或元素项或字符串
+            1、array.indexOf(searchElement, fromIndex)：找到元素xxx的索引值。如果存在返回元素
+的索引，如果不存在，则返回 -1。indexOf常为array.splice()提供删除元素的位置。
+            2、array.lastIndexOf('xxx')： 方法返回指定元素在数组中的最后一个的索引，如果不存在则返回 -1。
+从数组的后面向前查找。
+            3、array.at(num)：方法接收一个整数值并返回该索引对应的元素，允许正数和负数。
+负整数从数组中的最后一个元素开始倒数。
+            4、array.includes(searchElement, fromIndex)：方法用来判断一个数组是否包含一个
+指定的值，根据情况，如果包含，则返回 true，否则返回 false。
+            5、array.isArray(value) 用于确定传递的值是否是一个 Array。
+            6、array.keys() 方法返回一个包含数组中每个索引键的Array Iterator迭代器对象。
+            7、array.toLocaleString()：返回一个字符串表示数组中的元素。数组中的元素将使用各自的
+ toLocaleString 方法转成字符串。
+            8、array.toString()：方法返回一个字符串，表示指定的数组及其元素。
+            9、array.join(separator)：方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串
+并返回这个字符串，用逗号或指定的分隔符字符串分隔。如果数组只有一个元素，那么将返回该元素而不使用分隔符。
+            10、array.find((item, index, array) => {}, thisObj)：返回第一个满途判断条件的元素
+            11、array.findIndex((item, index, array) => {}, thisObj)：方法返回数组中满足提供的
+测试函数的第一个元素的索引。
+            12、array.findLast((item, index, array) => {}, thisObj)：方法返回数组中满足提供的
+测试函数条件的最后一个元素的值。如果没有找到对应元素，则返回 undefined。
+            13、array.findLastIndex((item, index, array) => {}, thisObj)：方法返回数组中满足
+提供的测试函数条件的最后一个元素的索引。
+
+
+
+
+        */
+
+        let animal = ["dog", "cat", "panda"];
+
+        //indexof()
+        let pos = animal.indexOf("cat")
+        console.log("the index of element is:", pos)
+
+        // splice
+        let removedItem = animal.splice(pos, 1, 'mom')
+        console.log("shift new array", animal)
+        console.log("the deleted element is:", removedItem)
+
+        // slice()
+        let shallowCopy = animal.slice()
+        console.log("the copy array is:", shallowCopy)
+
+        let arrTest = [
+            {
+                name: '张三',
+                age: 34
+            },
+            {
+                name: '李四',
+                age: 25,
+                info: {
+                    money: 200
+                }
+            },
+            {
+                name: '王五',
+                age: 21
+            },
+            {
+                name: '赵六',
+                age: 28
+            }
+        ];
+
+        let objTest = {
+            name: 'Jacky',
+            age: 3
+        }
+
+        /**array.forEach((item, index, array) => {}, thisObj)
+         * 方法的参数1是函数，函数的参数有item：数组的每个元素，index：元素的下标，array：数组本身。
+         * 如果没有thisObj，则参数函数中的this默认指向window。如果参数函数是普通函数，thisObj可以
+指定参数1函数的this指向。如果参数函数为箭头函数，则参数函数中的this始终指向window。
+         * 功能：遍历array中的所有元素项item，每个元素项都要执行一次函数体。
+         * */
+        arrTest.forEach(function (item, index, array) {
+            console.log("####", this)  //window  objTest
+            console.log(item, index, array)
+        }, objTest)
+
+        // 重写array.forEach()
+        Array.prototype.myForEach = function (cb) {
+            //myForEach()的this指向调用方法的数组， _arr就是调用数组。
+            let _arr = this;
+            let _len = _arr.length;
+            // 如果传了第二个参数的话，this指向参数。如果没有传第二个参数，this指向window。
+            let _arg2 = arguments[1] || window;
+
+            //遍历数组，每个数组元素都执行一次cb函数。
+            for (let i = 0; i < _len; i++) {
+                // 更改cb的this指向为_arg2
+                cb.apply(_arg2, [_arr[i], i, _arr])
+            }
+        }
+
+        arrTest.myForEach(function (item, index, array) {
+            console.log("myForEach", this)  //window
+            console.log("myForEach", item, index, array)
+        })
+
+
+        /**array.map((item, index, array) => {}, thisObj)
+         * 方法的参数1是函数，函数的参数有item：数组的每个元素，index：元素的下标，array：数组本身。
+         * 如果没有thisObj，则参数函数中的this默认指向window。如果参数函数是普通函数，thisObj可以
+指定参数1函数的this指向。如果参数函数为箭头函数，则参数函数中的this始终指向window。
+         * 功能：遍历array中的所有元素项item，每个元素项都要执行一次函数体。map()返回一个新数组。
+如果map()的参数函数不设置return，则map()和forEach()完全相同。
+         * */
+
+        function deepClone(origin, target) {
+            let tar = target || {};
+            let toStr = Object.prototype.toString;
+            let arrType = '[object Array]';
+
+            for (let key in origin) {
+                if (origin.hasOwnProperty(key)) {
+                    if (typeof origin[key] === 'object' && origin[key] !== null) {
+                        tar[key] = toStr.call(origin[key]) === arrType ? [] : {};
+                        deepClone(origin[key], tar[key])
+                    } else {
+                        tar[key] = origin[key]
+                    }
+                }
+            }
+            return tar
+        }
+
+        let newArr = arrTest.map(function (item, index, array) {
+            item.name = this.name;
+            item.age += 100;
+            return item;
+        }, objTest)
+
+        console.log("newArr", newArr)
+
+        Array.prototype.myMap = function (cb) {
+            let _arr = this;
+            let _len = _arr.length;
+            let _arg2 = arguments[1] || window;
+            let _newArr = [];  //_newArr做为方法的返回数组
+            let _item;  //深拷贝的属性值
+            let _res  //返回值
+
+            for (let i = 0; i < _len; i++) {
+                //_arr数组的元素项可能是深层次数组或对象，因此需要深拷贝。
+                _item = deepClone(_arr[i])
+                _res = cb.apply(_arg2, [_item, i, _arr])
+                // 如果cb有返回值，才将值push到数组中。没有值就不push，输出的数组元素就是undefined
+                _res && _newArr.push(_res)
+            }
+            return _newArr
+        }
+
+        console.log("arrTest", arrTest)
+        let newArr2 = arrTest.myMap(function (item, index, array) {
+            item.age += 100;
+            return item;
+        }, objTest)
+
+        console.log("newArr2", newArr2)
+
+
+        /**array.filter((item, index, array) => {}, thisObj)
+         * 功能：遍历array中的所有元素项item，每个元素项都要执行一次参数函数。函数体中有关于元素项的
+判断条件。参数函数最终 return true 就将该元素项放入新数组；return false 就不放入新数组。
+filter()方法最终返回一个新的数组，新数组中的元素是指定数组中符合条件的所有元素。即过滤元素。
+         * */
+
+        let newArrFilter = arrTest.filter(function (item, index, array) {
+            return item.age > 25
+        }, objTest)
+
+        console.log("newArrFilter", newArr)
+
+        Array.prototype.myFilter = function (cb) {
+            let _arr = this;
+            let _len = _arr.length;
+            let _arg2 = arguments[1] || window;
+            let _newArr = [];
+            let _item;
+
+            for (let i = 0; i < _len; i++) {
+                _item = deepClone(_arr[i]);
+                cb.apply(_arg2, [_item, i, _arr]) ? _newArr.push(_item) : '';
+            }
+
+            return _newArr
+        }
+
+        /**array.every((item, index, array) => {}, thisObj)：
+         * 功能：遍历array中的所有元素项item，每个元素项都要执行一次参数函数。函数体中有关于元素项的
+判断条件。数组的所有元素都满足参数函数的判断条件，则every()方法返回true。如果数组中有一个不满足参数函数
+的判断条件的元素，则every()方法返回false。
+         * */
+
+        let resEvery = arrTest.every(function (item, index, array) {
+            return item.age < 136
+        }, objTest)
+
+        console.log("resEvery", resEvery)
+
+
+        Array.prototype.myEvery = function (cb) {
+            let _arr = this;
+            let _len = _arr.length;
+            let _arg2 = arguments[1] || window;
+            let _res = true;
+
+            for (let i = 0; i < _len; i++) {
+                if (!cb.apply(arg2, [_arr[i], i, _arr])) {
+                    _res = false;
+                    break;
+                }
+            }
+
+            return _res
+        }
+
+        /**array.some((item, index, array) => {}, thisObj)：
+         * 功能：遍历array中的所有元素项item，每个元素项都要执行一次参数函数。函数体中有关于元素项的
+判断条件。数组中只要有一个元素满足判断条件，则some()方法返回true。如果数组中的所有元素都不满足条件，
+some()方法才但会false。
+         * */
+
+        let resFilter = arrTest.some(function (item, index, array) {
+            return item.age <= 21;
+        }, objTest);
+
+        console.log("res", resFilter)
+
+
+        Array.prototype.mySome = function (cb) {
+            let _arr = this;
+            let _len = _arr.length;
+            let _arg2 = arguments[1] || window;
+            let _res = true;
+
+            for (let i = 0; i < _len; i++) {
+                if (cb.apply(arg2, [_arr[i], i, _arr])) {
+                    _res = true;
+                    break;
+                }
+            }
+
+            return _res
+        }
+
+
+        /**array.reduce((prev, item, index, array) => {}, initialValue)：
+         * prev参数是数组。数组prev和数组initialValue具有相同的引用指针。
+         * 功能：遍历array中的所有元素项item，每个元素项都要执行一次参数函数。执行期间，将满足判断条件
+的元素添加到prev数组中，并最终reduce prev。reduce()的意思是归纳。
+         * array.reduceRight()就会从遍历数组的方向是从右到左，功能完全相同。
+         * */
+
+        let initialValue = [];
+        let newArrReduce = arrTest.reduce(function (prev, item, index, array) {
+            console.log(prev === initialValue);
+            item.age >= 125 && prev.push(item);
+            return prev;
+        }, initialValue)
+
+        console.log("newArrReduce", newArrReduce)
+
+
+        Array.prototype.myReduce = function (cb, initialValue) {
+            let _arr = this,
+                _len = _arr.length,
+                _arg3 = arguments[2] || window,
+                _item;
+
+            for (let i = 0; i < _len; i++) {
+                _item = deepClone(_arr[i]);
+                initialValue = cb.apply(_arg3, [initialValue, _item, i, _arr])
+            }
+
+            return initialValue;
+        }
+
+
+        let initialValue2 = [];
+        let newArrReduce2 = arrTest.reduceRight(function (prev, item, index, array) {
+            console.log(prev === initialValue2);
+            item.age >= 125 && prev.push(item);
+            return prev;
+        }, initialValue2)
+
+        console.log("newArrReduce2", newArrReduce2)
+
+        Array.prototype.myReduceRight = function (cb, initialValue) {
+            let _arr = this,
+                _len = _arr.length,
+                _arg3 = arguments[2] || window,
+                _item;
+
+            for (let i = _len; i >= 0; i--) {
+                _item = deepClone(_arr[i]);
+                initialValue = cb.apply(_arg3, [initialValue, _item, i, _arr])
+            }
+
+            return initialValue;
+        }
+
+        /*array.find((item, index, array) => {}, thisObj)：
+        * 功能：遍历array中的所有元素项item，数组元素依次执行参数函数。如果某个元素满足参数函数中的
+判断条件，则find()方法返回该元素，并结束遍历。如果没有元素满足参数函数中的判断条件，则find()方法返回undefined
+        */
+        const numFindArray = [24, 64, 32, 10]
+        let newNumFindArray = numFindArray.find((item, index, array) => {
+            if (item > 18) {
+                return item
+            }
+        })
+        console.log("newNumFindArray:", newNumFindArray)  //newNumFindArray: 24
+
+
+        /*array.concat(array, variate, object, funciton ...)：
+        * 功能：方法的参数可以是数组、变量、对象、函数等任何数据。方法能见每个参数依次合并到调用方法
+的数组中。如果参数是数组，则会去掉数组，只将元素合并到调用方法的数组中，但方法不会递归到嵌套函数参数中。
+如果没有参数，则concat()相当于是浅拷贝。
+        */
+        const letters = ['a', 'b', 'c'];
+        const numbers = [1, 2, 3];
+        const math = 'add';
+        const functionTest = function () { };
+
+        const alphaNumeric = letters.concat(numbers, math, '6', { 'a': 3 }, [numbers], functionTest);
+        console.log("alphaNumeric", alphaNumeric);
+
+        /*array.copyWithin(target, start, end)
+        * 参数：target是接收复制元素的起始位置。start是开始复制元素的起始位置。如果start被忽略，
+copyWithin将会从0开始复制。end是开始复制元素的结束位置。如果end被忽略，copyWithin方法将会一直复制
+至数组结尾（默认为 arr.length）。区间为[start, end)
+        * 功能：方法浅复制数组的一部分到同一数组中的另一个位置，并返回它，不会改变原数组的长度。
+        */
+
+        const array1 = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+        array1.copyWithin(0, 3, 5)
+        console.log("array1", array1);
+
+
+        /*array.flat(depth)：
+        * 参数：指定要提取嵌套数组的结构深度，默认值为 1。
+        * 功能：方法会按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个
+新数组中，并返回。
+        */
+        const arr1 = [0, 1, 2, [3, 4]];
+        const newArr1 = arr1.flat()
+        console.log("newArr1", newArr1);
+        const arr2 = [0, 1, 2, [[[3, 4]]]];
+        console.log(arr2.flat(3));
+
+
+        /*array.sort(function compareFn(a, b) { ... })：
+        * 参数：compareFn用来指定按某种顺序进行排列的函数。如果省略，元素按照转换为的字符串的各个字符
+的 Unicode 位点进行排序。
+        * 功能：给数组的各元素排序。
+        */
+        const months = ['March', 'Jan', 'Feb', 'Dec'];
+        months.sort();
+        console.log(months); // ["Dec", "Feb", "Jan", "March"]
+
+        const arrayNum = [1, 30, 4, 21, 100000];
+        arrayNum.sort();
+        console.log(arrayNum); //[1, 100000, 21, 30, 4]
+
+
+        /**array.from(arrayLike, (element, index) => { ... } )：
+         * 参数：arrayLike是类数组或者可迭代对象，element是类数组元素或可迭代对象的属性，index是序号。
+         * 功能：方法对一个类似数组或可迭代对象创建一个新的，浅拷贝的数组实例。
+         * */
+        console.log(Array.from('foo'));  //Array ["f", "o", "o"]
+        console.log(Array.from([1, 2, 3], x => x + x)); //Array [2, 4, 6]
+
+
+        /**array.join(separator)：
+         * 参数：separator指定一个字符串来分隔数组的每个元素。如果省略，数组元素用逗号（,）分隔。
+如果 separator 是空字符串（""），则所有元素之间都没有任何字符。
+         * 功能：方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串，用逗号
+或指定的分隔符字符串分隔。如果数组只有一个元素，那么将返回该元素而不使用分隔符。
+         * 返回值：一个所有数组元素连接的字符串。
+         * */
+        const elements = ['Fire', 'Air', 'Water'];
+        console.log(elements.join());  //"Fire,Air,Water"
+        console.log(elements.join('')); //  "FireAirWater"
+        console.log(elements.join('-')); // "Fire-Air-Water"
+
+
+        /**array.fill(value, start, end)：
+         * 参数：value是用来填充数组元素的值。start：起始索引，默认值为0。end：终止索引，默认值为arr.length。
+         * 功能：方法用一个固定值填充一个数组中从起始索引到终止索引内的全部元素。不包括终止索引。
+         * */
+        const arrayFill = [1, 2, 3, 4];
+        // Fill with 0 from position 2 until position 4
+        console.log(arrayFill.fill(0, 2, 4)); // Array [1, 2, 0, 0]
+        // Fill with 5 from position 1
+        console.log(arrayFill.fill(5, 1)); // Array [1, 5, 5, 5]
+        console.log(arrayFill.fill(6)); // Array [6, 6, 6, 6]
+
+        /**3、数组和类数组对象
+         * 类数组对象：可以通过索引属性访问元素并且拥有 length 属性的对象。类数组对象在访问、赋值、
+获取长度上的操作与数组一致。例如：arguments
+         * 区别：1：类数组对象不具备数组的方法(splice，split，push..)。2：类数组是一个普通对象，数组类型
+是Array。
+         *类数组对象转换为数组的方式：1:Array.prototype.slice.call(arrayLike, start)
+2:[...arrayLike]。3:Array.from(arrayLike)。
+         */
+        const arrLike = {
+            0: 'name',
+            1: 'age',
+            2: 'job',
+            length: 3
+        }
+
+    </script>
+</body>
+
+</html>

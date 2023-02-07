@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //4、创建对象的方法
+        /*1、对象
+            对象都是由构造方法实例化而来。常见的对象创建方法：1、使用字面量{}创建：let obj1 = {}。
+2、实例化构造函数创建：new Object()。实际上，let obj1 = {} => let obj1 = new Object()。
+            new的作用：1、根据构造函数生成实例对象。2、根据构造函数的原型生成实例对象的原型。
+            对象中包含自身的属性和方法，以及构造函数的prototype。prototype包含构造函数原型的属性、
+方法和constructor。constructor指向构造对象的构造函数。通过new object.constructor可以再次构造出
+一个新对象。
+            对象是引用值，操作对象的属性和方法，流程是先通过变量找到存储对象在堆内存地址的指针，然后根据
+指针找到对象的具体值再进行操作。obj1 = obj2，表示两个变量存储着相同的指针，指向同一个堆内存。
+             对象有两种访问属性或方法的方式：1、点方法:object.attributeKeyName，
+2、[]方法:object['attributeKeyName']，[]内是字符串形式的属性名。当属性名中有数字时，就需要
+用[]来拼接调用。实际上点方法也是转换成[]方法来调用对象属性和方法的。 通过[]方法给对象添加属性和通过点方法
+给对象添加属性的效果完全相同。
+        */
+        let myLang = {
+            No1: 'HTML',
+            No2: 'CSS',
+            No3: 'Javascript',
+            myStudyingLang: function (num) {
+                console.log(this['No' + num])
+            }
+        }
+
+        myLang.myStudyingLang(1)
+        myLang['No' + 4] = 'react';
+        console.log(myLang['No' + 4]) //react
+        console.log("myLang", myLang)
+
+
+        /**2、Object的静态方法
+         * 2.1、Object.create(prototype, attribute)：使用指定的原型对象和属性创建一个新对象。
+         * Object.getPrototypeOf(obj)：获取对象obj的prototype。
+         * Object.setPrototypeOf(object, objectPrototype)：设置对象的原型。
+         * 2.2、Object.assign(target, ...sources) ：复制一个或多个对象来创建一个新对象。
+         * 2.3、Object.defineProperty(target, attribute, descriptors)：给对象添加一个属性
+并指定该属性的配置。
+         * Object.defineProperties(target, attributes)：给对象添加多个属性并指定它们的配置。
+         * 2.4、obj.hasOwnProperty(prop)：判断obj中是否有prop属性，返回布尔值。
+         * 2.5、Object.getOwnPropertyDescriptor(obj, prop)：获取obj对象中prop属性的描述符。
+         * Object.getOwnPropertyDescriptors(obj)：获取obj对象所有属性的描述符。
+         * 2.6、Object.entries()：返回给定对象自身可枚举的[key, value]数组。
+         * Object.fromEntries()：将[key, value]类型的数组转化为对象。
+         * 2.7、Object.freeze(object)  ：冻结对象，其他代码不能删除或更改任何属性。
+         * Object.seal()：密封对象，其他代码不可删除和扩展任何属性。
+         * Object.preventExtensions()：禁止扩展对象，其他代码不可扩展任何属性。
+         * Object.isFrozen(obj)：判断对象是否为冻结对象。
+         * Object.isSealed(object)：判断对象是否为密封对象。
+         * Object.isExtensible(object)：判断对象是否可以扩展。
+         * 2.8、Object.keys(object)：返回对象的键名
+         *  Object.getOwnPropertyNames(object) ：返回一个数组，它包含了指定对象所有的可枚举或
+不可枚举的属性名。
+        * 2.9、Object.getOwnPropertySymbols(obj) ：方法返回一个给定对象自身的所有 Symbol 属性的数组。
+        * 2.10、Object.values(obj)： 方法返回一个给定对象自身的所有可枚举属性值的数组，
+         * */
+
+        /*3、Object的实例属性
+        *3.1、 Object.prototype.constructor： 一个引用值，指向Object构造函数。
+        */  
+
+        
+
+        /**对象的底层方法。
+         * EX6标准当中，任何的语法和对象相关的内建函数方法都是基于这14种内部方法构建出来的。也就是说
+         所用到的每个实验函数，即可操作的方法，都是基于这14种内建的方法所提供的API
+         * 1、获取原型 [[GetPrototypeOf]]
+         * 2、设置原型 [[SetPrototypeOf]]
+         * 3、获取对象的可扩展性 [[IsExtensible]]
+         * 4、获取自有属性 [[GetOwnProperty]]
+         * 5、禁止扩展对象 [[PreventExtensions]]
+         * 6、拦截对象操作 [[DefineOwnProperty]] 
+         * 7、判断是否有自身属性 [[HasProperty]]
+         * 8、判断属性是否在对象中，获取对象的属性值  [[GET]]
+         * 9、设置对象的属性[[SET]] 
+         * 10、删除对象的属性 [[Delete]] 
+         * 11、枚举 [[Enumerate]] 
+         * 12、获取键集合 [[OwnPropertyKeys]] Object.keys()
+         * 13、函数调用 call()\apply()
+         * 14、实例化函数 new
+         * */
+
+
+        /*2.1、Object.create(prototype, attribute)、 Object.getPrototypeOf(obj)
+Object.setPrototypeOf(object, objectPrototype)
+        * Object.create(prototype, attribute)：创建一个对象.参数1是对象的原型，参数2是对象属性
+的描述器descriptor。descriptor用于描述对象属性的各种特性。
+        * Object.getPrototypeOf(obj)：获取对象obj的prototype。
+        * Object.setPrototypeOf(object, objectPrototype)：将object对象的原型设置为objectPrototype
+        */
+        let createObj = Object.create({ a: 1 },
+            {
+                b: {
+                    value: 5,
+                    configurable: true,
+                    enumerable: true,
+                    writable: true
+                },
+                c: {
+                    value: 4,
+                    writable: true
+                }
+            })
+        console.log("createObj", createObj)
+
+        // 使用null作为参数，实例对象没有原型。这就证明不是所有的对象都继承于Object.prototype
+        let objNull = Object.create(null)
+        console.log("objNull", objNull)
+
+        const createObjProperty = Object.getPrototypeOf(createObj);
+        console.log("createObjProperty", createObjProperty);
+        
+        const setPropertyToObjNull = Object.setPrototypeOf(objNull, { d: 5, e: 6 });
+        console.log("setPropertyToObjNull", setPropertyToObjNull);
+        
+
+
+        /*2.2、Object.assign(target, ...sources) 
+        target：目标对象，source：资源对象，可以是多个。
+        Object.assign()：将一个或多个source对象中可枚举的自身的属性分配给target，不可枚举的属性和
+source原型中的属性都不会分配给target。方法的返回值就是target，因此，target和接收方法返回值的变量的引用
+相同，是同一对象。
+        */
+        // 案例一：
+        const test1 = {
+            a: 1,
+            b: 2
+        };
+
+        const test2 = {
+            b: 3,
+            c: 4
+        };
+
+        function Test3() {
+            this.c = 5;
+            this.d = 6;
+        }
+        const test3 = new Test3();
+
+        // test3.__proto__.e是在Test3.prototype中添加属性e。test2.__proto__.f是在Object.prototype中添加属性f。
+        test3.__proto__.e = 99;
+        // test2.__proto__.f = 80;
+
+        const test4 = Object.assign(test1, test2, test3)
+        console.log("test1", test1)
+        console.log("test2", test2)
+        console.log("test3", test3)
+        console.log("test4", test4)
+
+        /*案例二：v1,v2,v3,v4都不是对象，就需要转成对象。通过包装类转化后， r1,r3,r4都不可以枚举，
+只有r2可以枚举。源对象中可枚举的属性才能分配到目标对象中        
+        */
+        const v1 = 123;
+        const v2 = '123';
+        const v3 = true;
+        const v4 = function test() { };
+
+        const v5 = Object.assign({}, v1, v2, v3, v4);
+        console.log("v5", v5)  //{0: '1', 1: '2', 2: '3'}
+
+        const r1 = new Number(v1);
+        const r2 = new String(v2);
+        const r3 = new Boolean(v3);
+        const r4 = new Function(v4);
+
+        for (let k in r2) {
+            console.log(k, r2[k])
+        }
+
+        // 重写Object.assign()
+        const source = {
+            a: 1,
+            get b() {
+                console.log(123)
+                return 2;
+            }
+        }
+
+        const ress = Object.assign({}, source)
+        console.log("ress", ress) //{a:1, b:2}
+
+        Object.myAssign = function (target, ...sources) {
+            sources.forEach((source) => {
+                /*Object.keys(source)获取源对象自身可枚举属性的key，即键名。返回数组。
+                array.reduce()中的参数descriptors和{}完全相等，相当于创建一个容器，接收属性以及
+                属性的描述符。
+                */
+                const descriptors = Object.keys(source).reduce((descriptors, key) => {
+                    /*Object.getOwnPropertyDescriptor(source,key)：获取源对象的属性的描述符，
+                    然后将属性key做为descriptors对象的属性，描述符做为属性的值。然后返回descriptors
+                    */
+                    descriptors[key] = Object.getOwnPropertyDescriptor(source, key)
+                    return descriptors;
+                }, {})
+                /*Object.defineProperties()：给target添加descriptors，从而实现将source自身
+                可枚举的属性分配给target。
+                */
+                Object.defineProperties(target, descriptors)
+            });
+            return target;
+        }
+
+        const resc = Object.myAssign({}, source)
+        console.log("resc", resc)
+
+
+        /**2.3、Object.defineProperty(target, prop, descriptors)
+         * target是需要添加属性的对象，prop是给对象添加的属性，descriptors是属性的描述器。
+         * 方法会给target对象添加一个prop属性，属性的描述符为descriptors，或者是按照descriptors
+修改对象已有的prop属性，最后返回Object对象。源对象和返回对象引用相同。defineProperty()必须由Object
+调用。defineProperty()是定义属性，因此target中最好不存在prop属性，但如果存在也可以。
+         * 该方法允许精确地添加或修改对象的属性，通过赋值操作添加的普通属性是可枚举的，在枚举对象属性时
+会被枚举到(for ... in 或 Object.keys方法)，可以改变这些属性的值，也可以删除这些属性。这个方法允许
+修改默认的额外配置。默认情况下，使用Object.defineProperty()添加的属性值是不可修改的，属性也是不可删除
+和枚举的。
+         * 对象里目前存在的属性描述符有两种主要形式：数据描述符和存取描述符。数据描述符是一个具体值的属性
+，该值可以是可写的，也可以是不可写的。存取描述符是由getter和setter函数所描述的属性。一个描述符只能是这
+两者其中之一，不能同时是两者。这两种描述符都是对象。
+         * 如果一个描述符不具有value、writable、get和set中的任意一个键，那么它将被认为是一个数据
+描述符。如果一个描述符同时拥有value或writable和get或set键，则会产生一个异常。也就是说，value/wrtiable
+不可以和get/set同时存在。
+         * descriptor {
+             configurable 可配置的。当configurable为true时，属性才能被删除。当且仅当该属性的
+configurable键值为true时，该属性的描述符才能够被改变。默认为false
+             enumerable 可枚举的：当且仅当该属性的enumerable键值为true时，该属性才会出现在对象的
+枚举属性中。默认为false。
+             数据描述符：
+             writable 可读的：当且仅当该属性的writable键值为true时，属性才可访问，属性的值才能
+被赋值运算符改变。默认为false。
+             value 属性值：该属性对应的值，可以是任何有效的JavaScript值（数值、对象、函数等）。
+默认是undefined
+             存取描述符：
+             get：属性的getter函数，如果没有getter，则为undefined。当访问该属性时，会调用此函数，
+执行时不传入任何参数，但是会传入this对象（由于继承关系，这里的this并不一定是定义该属性的对象）。
+该属性的返回值会被用作属性的值。也就是说，访问对象的属性时，get劫持了访问操作，并执行get。
+数据描述符value只能赋值，存取描述符get可以做很多事情。默认是undefined
+             set：属性的setter函数，如果没有setter，则为undefined。当属性值被修改时，会调用
+此函数。该方法接受一个参数（也就是被赋予的新值），会传入赋值时的this对象。默认为undefined。
+也就是说，设置对象属性的值时，set劫持了设置操作，并执行set。默认是undefined
+         }
+        *Object.defineProperty()就是更加具体的去描述或设置一个对象内部属性的操作性。普通声明的对象
+属性，属性除了键名和键值没有区别。这种方法无法控制属性的描述符。架构师开发框架时，有时候需要设置属性的描述
+符。
+        
+        * Object.defineProperties(target, props)
+        * props是对象，对象的key是给target添加的属性，对象的value是属性的descriptors
+        
+        * obj.hasOwnProperty(prop)：判断对象obj中是否有属性prop，返回值为布尔值。
+        */
+        const resultObj = Object.defineProperty({}, 'a', {
+            value: 1,
+            configurable: false,
+            writable: true,
+        })
+        console.log("$$##%%", resultObj.a)
+
+        const res = Object.assign(resultObj, { b: 2 }, { b: 3, a: 100 }, { c: 4 });
+        //{ b: 3, a: 100}中的a可枚举并分配给了resultObj，可resultObj.a不可枚举，因此遍历不出来。
+
+        for (let k in resultObj) {
+            console.log("**", k, resultObj[k])  // b 3 c 4
+        }
+        console.log("$$resultObj", resultObj.a)  //
+
+        // 给objz添加多个属性。
+        const objz = {};
+        Object.defineProperties(objz, {
+            a: {
+                value: 1,
+                // enumerable: true
+            },
+            b: {
+                value: 2,
+                enumerable: true
+            }
+        });
+
+        /**2.5、obj.hasOwnProperty(prop)：判断对象obj中是否有属性prop，返回值为布尔值。
+         * for循环打印对象自身和原型中所有的可枚举属性。
+         * 
+        */
+        console.log("hasOwnProperty", objz.hasOwnProperty('a')) //true
+
+        
+        /* 2.6、Object.getOwnPropertyDescriptor(obj, prop)、Object.getOwnPropertyDescriptors(obj)
+        * Object.getOwnPropertyDescriptor(obj, prop) ：
+        * 参数：obj是指定的对象。prop是对象中的一个属性。
+        * 功能：方法返回指定对象上一个自有属性对应的属性描述符。
+        * Object.getOwnPropertyDescriptors(obj)： 方法用来获取一个对象的所有自身属性的描述符。
+        */
+        const object1 = {
+            property1: 42
+        };
+
+        const descriptor1 = Object.getOwnPropertyDescriptor(object1, 'property1');
+        console.log("descriptor1", descriptor1)  //{...}
+        console.log(descriptor1.configurable); //true
+        console.log(descriptor1.value);  //42
+
+
+        /*2.4、Object.entries()  Object.fromEntries()
+        Object.entries(obj)：将对象自身可枚举的属性变成由[key,value]数组组成的数组。方法将不可迭代
+的对象转化成可迭代的数组。从而能更方便的迭代获取key和value。方法返回一个新数组
+        Object.fromEntries(obj)：将由[key, value]组成的数组/map类型的数据转变成对象，并返回一个
+新对象。
+        */
+
+        function TestEntries() {
+            this.a = 1;
+            this.b = 2;
+        }
+        TestEntries.prototype.c = 3;
+        let testEntries = new TestEntries();
+        for (let k in testEntries) {  //test对象不可迭代，不能用for...of...
+            console.log("TestEntries:", testEntries, "k:", k, "test[k]:",testEntries[k])  //c, 3
+        }
+
+        const testEntriesArr = Object.entries(testEntries)
+        console.log("testEntriesArr", testEntriesArr)  //[['a', 1] ['b', 2]]
+        // 循环并解构key，value
+        for (let [k, v] of testEntriesArr) {
+            console.log("k, v",k, v) //{a: 1, b: 2}
+        }
+
+        const testFromEntriesObj = Object.fromEntries(testEntriesArr);
+        console.log("testFromEntriesObj", testFromEntriesObj)
+
+
+        /* Map(obj)：Map(obj)根据obj对象自身可枚举的属性实例化出map对象。map对象可以调用set()方法
+给map对象添加数据。map对象中的数据为map类型的数据。
+        * Map()可以将[key, value]组成的数组，转换成map类型的对象。
+        */
+        const m = new Map();
+        m.set('a', 1);
+        m.set('b', 2);
+        console.log("m", m);//{'a' => 1, 'b' => 2} Map()创建的对象是map类型的数据。  
+
+        // Map将entries数组转换成map类型的对象。
+        const  mapEntriesObj = new Map(testEntriesArr);
+        console.log("mapEntriesObj", mapEntriesObj)
+
+
+
+        // 重写Object.entries()
+        const obje = {
+            a: 1,
+            b: 2
+        }
+        Object.prototype.c = 3
+
+        Object.myEntries = function (o) {
+            // 创建一个数组容器
+            let _pool = [];
+            if (Object.prototype.toString.call(o) === '[object Object]') {
+                for (let k in o) {
+                    if (o.hasOwnProperty(k)) {
+                        let _arr = [k, o[k]];
+                        _pool.push(_arr);
+                    }
+                }
+            }
+            return _pool;
+        }
+
+
+        // 重写Object.myFromEntries()
+        Object.myFromEntries = function (o) {
+            let _obj = {};
+
+            for (let item of o) {
+                _obj[item[0]] = item[1]
+            }
+            return _obj
+        }
+
+
+        /*2.5、Object.freeze(object)：对象冻结。
+        * Object.freeze(object)、Object.seal(object)、Object.preventExtensions(object)
+都是浅层的操作对象，并返回对象本身。由于是浅层的，所以object.prototype对象中的属性可正常操作。
+        * Object.freeze(object)：冻结的对象：属性可读，不可修改属性值，不可删除属性，不可扩展属性，
+不可通过get/set不能操作属性，不可修改object.prototype对象。
+          Object.seal(object)：密封的对象：属性可读，可修改属性值，不可删除属性，不可扩展属性，
+不可通过get/set不能操作属性，不可修改object.prototype对象。
+          Object.preventExtensions(object)：禁止扩展的对象：属性可读，可修改属性值，可删除属性，
+不可扩展属性，不可通过get/set不能操作属性，不可修改object.prototype对象。
+        * 严格模式下操作冻结/密封/禁止扩展的对象属性会报错。
+        * Object.isFrozen(obj)：查看obj是否被冻结，若是冻结对象则返回true。 
+         Object.isSealed(obj)：查看obj是否被密封，若是密封对象则返回true。
+         Object.isExtensible(obj)： 查看object是否可扩展，若是可扩展对象则返回true。
+        * 严格模式下操作冻结/密封/禁止扩展的对象属性会报错。
+        * 不可扩展的空对象就是冻结对象/密封对象。因为空对象没有属性，无法删除和修改。冻结对象一定是密封对象
+        */
+        function FunFreeze() {
+            this.a = 1;
+            this.b = 2;
+        }
+        FunFreeze.prototype.c = 3;
+        FunFreeze.prototype.e = 6;
+        const freezeObj = new FunFreeze();
+        const sealObj = new FunFreeze();
+        const pExtensionsObj = new FunFreeze();
+
+        const newFreezeObj = Object.freeze(freezeObj)
+        const newSealObj = Object.seal(sealObj)
+        const newPExtensionsObj = Object.preventExtensions(pExtensionsObj)
+
+        console.log("writable",freezeObj.a);    //1           freezeObj可读
+        console.log("writable",sealObj.a);      //1           sealObj可读
+        console.log("writable",pExtensionsObj.a); //1         pExtensionsObj可读
+
+
+        freezeObj.a = 4;
+        sealObj.a = 4;
+        pExtensionsObj.a = 4;
+        console.log("changable", freezeObj.a)      //undefined  freezeObj不可修改
+        console.log("changable", sealObj.a)        //4          sealObj可修改
+        console.log("changable", pExtensionsObj.a) //4          pExtensionsObj可修改
+
+
+        delete freezeObj.b;
+        delete sealObj.b;
+        delete pExtensionsObj.b;
+        console.log("delete", freezeObj);       // {a:1, b:2}  freezeObj不可删除属性
+        console.log("delete", sealObj);         //{a:1, b:2}   sealObj不可删除属性 
+        console.log("delete", pExtensionsObj);  //{a:1}        pExtensionsObj可删除属性
+
+        freezeObj.d = 4;
+        sealObj.d = 4;
+        pExtensionsObj.d = 4;
+        console.log("extensions", freezeObj.d, sealObj.d, pExtensionsObj.d); //不可扩展属性
+
+        
+        FunFreeze.prototype.c = 333; //可以通过构造函数原型属性更改属性
+        freezeObj.__proto__.e = 444; //可以通过对象的proto更改原型上的属性
+        // freezeObj.__proto__ = { // 报错：不可更改原型对象
+        //     f: 6
+        // }
+       
+        const isFreezeObj = Object.isFrozen(freezeObj);
+        const isSealObj = Object.isSealed(sealObj);
+        const isPExtensionsObj = Object.isExtensible(pExtensionsObj);
+        console.log(isFreezeObj) //true      
+        console.log(isSealObj) //true
+        console.log(isPExtensionsObj) //false
+
+
+        // ES5环境里，报错：xxx is not an object。ES6环境里，返回参数本身。
+        const resFteeze = Object.freeze(false)
+        console.log(resFteeze)  //false
+
+
+        // 深度冻结
+        const ofreeze = {
+            a: 1,
+            b: 2,
+            c: {
+                d: 3,
+                e: {
+                    f: 4
+                }
+            }
+        }
+
+        Object.deepFreeze = function (params) {
+            let _keys = Object.getOwnPropertyNames(params)
+
+            if (_keys.length) {
+                _keys.forEach(function (key) {
+                    // 获取key对应的值，以便判断value是否依旧是对象
+                    let _value = params[key]
+                    // 如果key依旧是对象，则递归deepFreeze()，从而实现深冻结。
+                    if (typeof _value === 'object' && _value !== null) {
+                        Object.deepFreeze(_value)
+                    }
+                })
+            }
+            /*冻结参数对象。递归函数的执行结果返回到函数的执行入口。 
+            即，_value处执行递归函数，函数执行结果就返回到_value所对应的key。
+            */
+            return Object.freeze(params)
+        }
+
+
+        //    深密封
+        Object.deepSeal = function (params) {
+            let _keys = Object.getOwnPropertyNames(params)
+
+            if (_keys.length) {
+                _keys.forEach(function (key) {
+                    let _value = params[key]
+                    if (typeof _value === 'object' && _value !== null) {
+                        Object.deepSeal(_value)
+                    }
+                })
+            }
+
+            return Object.seal(params)
+        }
+        // 深扩展的写法和深冻结、深密封相同
+
+        /*2.7、Object.keys(object)、Object.getOwnPropertyNames(object)
+        * Object.keys(object)：只能获取对象自身可枚举的属性的键名，不可获取prototype中的属性的键名，
+返回数组。
+        * Object.getOwnPropertyNames(object)：可以获取对象自身所有属性的键名，包括不可枚举属性的
+键名，但不会获取property中的键名，返回数组。
+        */
+
+
+        /*Object.getOwnPropertySymbols(obj) ：
+        * 方法返回一个给定对象自身的所有 Symbol 属性的数组。
+        */
+
+        /*Object.values(obj)： 方法返回一个给定对象自身的所有可枚举属性值的数组，
+        */
+        var objss = { foo: 'bar', baz: 42 };
+        console.log(Object.values(objss)); // ['bar', 42]
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+</head>
+
+<body>
+      <script>
+            // loop
+            /**1、for\ for in \ for of
+         * 循环、遍历、迭代
+         * 循环：循环是语言层面的语法，它是重复执行一段程序的方案。
+         * 遍历：业务层面上的做法，它是观察或者获取集合中的元素的一种做法
+         * 迭代：实现层面上的概念，实现遍历的底层方案其实就是迭代
+         * 
+         * for...in遍历对象的键名，因为对象是无序的，没有迭代器。for..of遍历数组的元素，因为数组是
+有序的，有迭代器。
+         *循环方法的发展过程：EXMAScript3的时候，没有针对可迭代对象的具体的遍历方法，只有语言层面的
+for循环。到了ECMAScript5的时候，增加了7个专门针对数组的遍历方法，增加了针对对象的遍历方法(for in)。
+这七个方法是forEach map filter reduce reduceRight some every。forEach和for循环完全相同。
+         * for...in..：语句以任意顺序遍历一个对象的除Symbol以外的可枚举属性的键名key。for...in..不能
+遍历Map类型和Set类型的数据。虽然数组本质上也是对象，for...in..也可以遍历数组，但是for...in..是为遍历
+对象属性而构建的，不建议与数组一起使用。
+         *for...of..：语句在可迭代对象（包括Array，Map，Set，String，TypedArray，arguments对象
+等等）上创建一个迭代循环，调用自定义迭代勾子，并为每个不同的属性的值执行语句。可迭代对象都有迭代器
+Symbol.iterator。因此，for..of..不能循环对象。
+         */
+
+            let arr = [1, 2, 3];
+            let mapData = new Map([[{ a: 1 }, 1], [{ b: 2 }, 2], [{ c: 3 }, 3]]);
+            let setData = new Set(['a', 'b', 'c']);
+            console.log("mapData", mapData, "setData", setData)
+
+            for (let i = 0; i < arr.length; i++) {
+                  console.log(arr[i], i, arr);  //重复执行这段程序
+            }
+
+            let objIn = {
+                  a: 1,
+                  b: 2,
+                  c: 3
+            }
+            for (let key in objIn) {
+                  console.log(key, objIn[key])
+            }
+
+            //  for in 也可以遍历数组
+            for (let key in arr) {
+                  console.log(key, arr[key])  //0 1, 1 2, 2 3
+            }
+
+            //  for in 不能遍历Map类型的数据
+            for (let key in mapData) {
+                  console.log(key)
+            }
+
+            //  for in 不能遍历Set类型的数据
+            for (let key in setData) {
+                  console.log(key)
+            }
+
+            //  报错：objIn is not iterable
+            // for (let value of objIn) {
+            //      console.log(value)
+            //  } 
+            for (let value of arr) {
+                  console.log(value)
+            }
+
+            for (let value of mapData) {
+                  console.log("value", value)
+            }
+
+            // 可以将数组元素中的元素给解构出来。
+            for (let [one, two] of mapData) {
+                  console.log(one, two)
+            }
+
+
+            /**2、生成器和迭代器
+             * 生成器（generator）的作用就是返回(生成)一个迭代器（iterator）。
+             * iterator.next()：执行一次迭代，输出这次迭代的值，以及done。done表示迭代是否完成。
+每一次迭代就是执行一次iterator.next()
+             * 
+             * */
+            function* generator(arr) {
+                  for (let v of arr) {
+                        yield v;  // yield的作用：返回一个值，并暂停循环。
+                  }
+            }
+
+            // const iterator = generator(arr)
+            const iterators = myGenerator(arr)
+
+            /*
+                for (let i = 0; i<= arr.length; i++) {
+                    console.log(iterator.next());
+                }
+            */
+
+            // console.log(iterator.next())
+            // console.log(iterator.next())
+            // console.log(iterator.next())
+            // console.log(iterator.next())
+
+            // 重写generator
+            function myGenerator(arr) {
+                  // 遍历次数，从0开始算起
+                  let nextIndex = 0;
+
+                  return {
+                        // generator()返回的是对象(iterator)，对象中有next()
+                        next() {
+                              /**next()返回下面这个对象
+                               * {
+                               *      value: ?,
+                               *      done: ?
+                               * }
+                               * */
+                              return nextIndex < arr.length
+                                    ?
+                                    // 如果nextIndex小于arr.length，那么value就是arr[nextIndex]，并且返回之后nextIndex自加1
+                                    {
+                                          value: arr[nextIndex++],
+                                          done: false
+                                    }
+                                    :
+                                    {
+                                          value: undefined, done: true
+                                    }
+                        }
+                  }
+            }
+
+            console.log(iterators.next())
+            console.log(iterators.next())
+            console.log(iterators.next())
+            console.log(iterators.next())
+
+
+            // 给有序对象添加迭代器
+            const oObj = {
+                  0: 1,
+                  1: 2,
+                  2: 3,
+                  length: 3
+            }
+
+            // 给oObj原型添加迭代器
+            Object.prototype[Symbol.iterator] = iterator
+
+            function iterator() {
+                  let index = 0;
+                  // 谁调用interator，this指向谁。
+                  var _this = this;
+
+                  return {
+                        next() {
+                              return index < _this.length
+                                    ?
+                                    { value: _this[index++], done: false }
+                                    :
+                                    { value: undefined, done: true }
+                        }
+                  }
+            }
+
+            for (let v of oObj) {
+                  console.log(v);  //1 2 3 
+            }
+
+
+            //3、estimate
+            /*
+            * 实现判断的方式：if-else语句、switch-case语句、三目运算、&&和||、===/==/!==。
+            1、switch语句根据表达式的结果，执行对应的case语句。如果没有case与之匹配，就执行default
+语句。无论是case还是default都必须要有break终止程序，不然程序回继续往下执行。switch表达式一般是整数、
+字符串和布尔值。switch适用场景：判断条件是几个比较固定的情况。
+            2、if-else语句根据表达式的结果，执行相应的语句。if-else使用场景：主要用于判断区间的情况，
+或者很多个点的情况。
+            3、三目运算的判断条件只能是布尔值。如果是true就执行?后面的代码，如果是false就执行:后面的
+代码。三目运算的使用场景：两种不同的情况。
+            4、&&和||：a && b：是a为true的情况下，再执行b。a || b：是a为false的情况下，再执行b。
+&&和||的使用场景：前者为true/false时，在执行后者。
+            5、===/==/!==：判断相不相等。
+      */
+
+            let direction = 'right'
+
+            switch (direction) {
+                  case 'left':
+                        console.log(`the direction is left`);
+                        break;
+                  case 'right':
+                        console.log(`the direction is right`);
+                        break;
+                  case 'front':
+                        console.log(`the direction is front`);
+                  default:
+                        console.log(`the direction is behind`);
+            }
+
+            let num = 60
+
+            if (num > 30) {
+                  console.log(`${num} greater than 30`)
+            } else if (num === 30) {
+                  console.log(`${num} equal to 30`);
+            } else {
+                  console.log(`${num} less than 30`);
+            }
+
+            let booleanValue = true
+            let variate = booleanValue ? 'true' : 'false'
+            console.log(`variate is ${variate} `)
+
+            // ||
+            function returnTest(name) {
+                  if (!name) {
+                        return `您没有填写姓名！`;
+                  }
+                  return name
+                  // return name || `您没有填写姓名！` name为真则返回，非真则返回后面的字符串
+            }
+            console.log(returnTest('xu'))
+      </script>
+</body>
+
+</html>
