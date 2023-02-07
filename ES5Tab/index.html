@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div class="tab J_tab">
+        <div class="nav">
+            <div class="nav-item current">选项1</div>
+            <div class="nav-item">选项2</div>
+            <div class="nav-item">选项3</div>
+        </div>
+        <div class="page">
+            <div class="page-item current">页面1</div>
+            <div class="page-item">页面2</div>
+            <div class="page-item">页面3</div>
+        </div>
+    </div>
+
+    <div style="display: none;" id="J_cityData">
+        [
+            {
+                "id": "1",
+                "city_name": "北京",
+                "intro": "北京市，简称“京",
+                "img": ""
+            },
+            {
+                "id": "2",
+                "city_name": "上海",
+                "intro": "上海市，简称“沪",
+                "img": ""
+            },
+            {
+                "id": "1",
+                "city_name": "成都",
+                "intro": "成都市，简称“巴蜀",
+                "img": ""
+            },
+            
+        ]
+    </div>
+
+    <script src="utils/tools.js"></script>
+    <script src="js/index.js"></script>
+    <script type="text/javascript">
+        var tab = new Tab({
+            el: '.J_tab',
+            classNameObjcet: {
+                navItem: {
+                    origin: 'nav-item',
+                    current: 'nav-item current'
+                },
+                pageItem: {
+                    origin: 'page-item',
+                    current: 'page-item current'
+                }
+            }
+        }).init()
+    </script>
+</body>
+
+</html>
