@@ -11,18 +11,27 @@
 <body>
     <script>
         /*
-            1、变量的分类和存储原理
+            1、变量的分类、存储原理、声明方式。
             javascript是弱类型语言，它根据变量值来推断变量的类型。因此，不同类型的变量可以相互赋值。
 typescript是强类型语言，变量的类型都由用户定义，不同类型的变量不可以相互赋值。
-            javascript的数据分为原始值（基本数据类型）和引用值（引用数据类型）。
-            基本数据类型：number、string、boolean、undefined、null。
-            引用数据类型：function、object、array、date、RegExp。
-            程序的任何数据和方法都需要通过变量来存储。
-            内存分为栈内存和堆内存。栈内存存储原始值和指针，指针指向堆内存中对应的引用值。变量名就是
-栈内存的空间名称。栈内存存储的原始值不可被更改，只会被创建和销毁。因此声明变量以及给变量赋值都是在栈内存
-中重新开辟空间，然后存储新的原始值或指针。   将引用值赋给变量，就是在栈内存中开辟空间，然后存储指向引用值
-在堆内存中地址的指针。当使用该变量时，就相当于是通过变量在栈内存中存储的指针，找到存储在堆内存中的具体值。
-因此，可能出现多个变量存储相同的指针。通过某个变量修改引用值后，调用其他变量得到的都是修改后的值。
+            javascript的数据分为原始值（基本数据类型）和引用值（引用数据类型）。基本数据类型：number、
+string、boolean、undefined、null。引用数据类型：function、object、array、date、RegExp。
+            存储变量的内存分为栈内存和堆内存。变量名就是栈内存的空间名称，变量值就是栈内存存储的值。
+栈内存存储原始值或指针。指针就是引用值在堆内存的地址。通过访问变量名，就可以获取栈内存存储的值。如果值为
+指针，则根据指针指向的堆内存的地址，获取引用值。由于引用值的地址是指针，因此存在多个变量存储同一指针的现象。
+访问和修改这些变量，操作的都是同一个引用值。栈内存存储的值不能被更改，只能被创建和销毁。声明变量和给变量赋值
+都是在栈内存中重新开辟空间。然后，存储新的原始值或指针。
+            变量声明的方式有：var、let、const、function、class、import。
+            let和const的特点：1、let和const为js新增了块级作用域。2、let和const不存在变量提升。
+3、let和const在同一个作用域中声明的变量、函数和形参不能重名。4、暂时性死区：在代码块中，let命令声明变量
+之前的区域都是“死区”，变量不可用。变量只能在声明之后使用。5、const定义的变量必须有初始值，变量指向的内存
+地址不可变动。因此，若const声明的变量是原始值，则变量值不可修改。若const声明的变量是引用值，则变量值整体
+不可修改但是可以修改局部值。let定义的变量可以修改内存地址。
+            问题：为什么需要块级作用域：1、var是全局作用域，且存在变量提升。导致内部变量可能会覆盖外层
+变量。2、用来计数的循环变量泄漏成为全局变量。3、有了块级作用域，外层作用域无法读取内层作用域的变量。
+            var和function声明的全局变量是顶层对象的属性，可以通过windox.attributeName调用。
+let、const和class定义的全局变量不是顶层对象的属性。无法通过windox.attributeName调用。
+            程序的任何数据、对象、函数都需要通过变量来存储，不同方式声明出的变量作用不同。
         */
         //基本类型
         let a = 3; //在栈内存中开辟一个空间，空间名称为a，空间存储的值为3。
@@ -34,18 +43,6 @@ typescript是强类型语言，变量的类型都由用户定义，不同类型�
         arr.push(5) //向arr存储的指针指向的堆内存中添加元素5。因为arr和arr2存储着相同的指针，因此arr2的值也变了。
         arr = [1, 2] //栈内存再开辟一个空间，空间名称为arr，空间存储的指针指向堆内存中的[1, 2]
 
-        /*2、变量声明
-            变量的声明方式有var、let、const、import、class、function。
-            let和const的特点：1、let和const为js新增了块级作用域。2、let和const不允许在同一作用域
-中声明重名变量、函数和参数。3、let和const不存在变量提升。4、暂时性死区：在代码块中，let命令声明变量之前的区域
-都是“死区”，变量不可用。变量只能在声明之后使用。5、const定义的变量必须初始化赋值，变量指向的内存地址不可
-变动。因此，若const声明的变量是原始值，则变量值不可修改。若const声明的变量是引用值，则变量值整体不可修改
-但是可以修改局部值。let定义的变量可以修改。
-            问题：为什么需要块级作用域：1、var是全局作用域，且存在变量提升。导致内部变量可能会覆盖外层
-变量。2、用来计数的循环变量泄漏成为全局变量。3、有了块级作用域，外层作用域无法读取内层作用域的变量。
-            var和function声明的全局变量是顶层对象的属性，可以通过windox.attributeName调用。
-let、const和class定义的全局变量不是顶层对象的属性。无法通过windox.attributeName调用。
-        */
         const x = [{ id: '001' }, 'jake', ['join']];
         x[0].id = '002';
         x[1] = 'tom'
@@ -54,7 +51,7 @@ let、const和class定义的全局变量不是顶层对象的属性。无法通�
 
 
 
-        /*3、判断数据类型
+        /*2、判断数据类型
             typeof(xxx)可以判断number、string、boolean、undefined、function、object。
 然而，typeof将object、array、Date、RegExp、null都判断为object。
             Object.prototype.toString.call(xxx)可以判断number、string、boolean、undefined、
@@ -98,8 +95,8 @@ function、object、array、Date、RegExp。方法返回结果的格式是[objec
         console.log(myTypeof(/\w/))  //regexp
         console.log(myTypeof(new String()))  //obj_string
 
-        /*4、数据类型转换
-        4.1、显示数据类型转换
+        /*3、数据类型转换
+        3.1、显示数据类型转换
             Number()将参数转换成number类型。转换规则：1、string类型的变量，若包含字母，则返回值为NaN。
 2、string类型的变量，若不包含字母，则转化为去掉首尾0的number。3、null转化为0。undefined转化为NaN。
 4、boolean类型的变量，若为true，则转化为1；若为false，则转化为0。
@@ -112,7 +109,7 @@ params2设置转换的进制，默认是十进制。parseInt只管将数字转�
             变量.toString()将变量的值转化为字符串类型
             String()将变量的数据类型强制转换成字符串类型
 
-        4.2、 隐式类型转换
+        3.2、 隐式类型转换
             运算等级：() > 乘除取余 > 加减 > 赋值
             为假的情况： false、undefined、 ''、 null、 NaN。  除此以外都是真  
             +  如果运算中有字符串，则将非字符串数据原原本本的转化为字符串数据，然后进行拼接。
@@ -157,7 +154,7 @@ params2设置转换的进制，默认是十进制。parseInt只管将数字转�
         console.log(!!' ' + !!'' - !!false || '未通过')  //1    ' '：空格字符串是真
 
         /*
-        5、== 和 ===
+        4、== 和 ===
             == != 只看值是否相等，不考虑类型是否相等。
             ===  !==既要看值是否相等，又要看类型是否相等。
             ==/===比较不会将string变为number类型，它直接比较''内的值。
@@ -170,7 +167,7 @@ params2设置转换的进制，默认是十进制。parseInt只管将数字转�
         console.log(undefined === null) //false
 
         /*
-        6、错误提示
+        5、错误提示
             错误分为语法错误和通用错误。
             语法错误：SyntaxError，它的特点就是程序全部都不执行。
             通用错误：ReferenceError，它的特点是程序会执行错误之前的代码。
@@ -178,7 +175,7 @@ params2设置转换的进制，默认是十进制。parseInt只管将数字转�
         */
 
         /*
-        7、与&& 、 或|| 非!
+        6、与&& 、 或|| 非!
            假：false、undefined、 ''、 null、 NaN。  除此以外都是真  
            &&：遇到真就往后走，遇到假或走到最后就返回当前的值。 在判断语句中，&&表示判断条件均为真才进入
 判断语句。||：遇到假就往后走，遇到真或者走到最后就返回当前的值。在判断语句中，||表示判断条件有一个为真，就
@@ -189,7 +186,7 @@ params2设置转换的进制，默认是十进制。parseInt只管将数字转�
         let e2 = 0 || null || 1 || 0
         console.log(e1, e2)  //undefined 1
 
-        // 8、逗号运算：返回最后一个数
+        // 7、逗号运算：返回最后一个数
         let nums = (2 - 1, 6 + 5, 24 + 1)  //25
         console.log(nums)
 
@@ -205,27 +202,25 @@ params2设置转换的进制，默认是十进制。parseInt只管将数字转�
         console.log(typeof (fn)) // string
 
         /*
-        9、包装类
+        8、包装类
            原始值没有属性和方法，原则上不能给它添加属性和方法。但当程序员强行给原始值添加属性和方法时，
 系统就会自动将原始值通过new Number()/String()/Boolean()转化为数字对象/字符串对象/布尔值对象。这样
 就能给它添加属性和方法。但转化后，系统无法自动创建变量来保存这个对象。因此如果用户不自定义变量来存储，系统
-就会把这个对象给删了。因此访问原始值的属性返回的就是undefined
-           注意：1、数字对象参与运算后，又会变成原始值。2、undefined和null没有对应的方法将它们转化为对象。
-            
+就会把这个对象给删了。因此访问原始值的属性返回的就是undefined。
+            基本数据类型string不具有属性和方法，String()构造出来的字符串对象才具有属性和方法。但是
+通过string调用属性和方法时，系统先通过new String(string)将字符串转换成字符串实例对象，然后调用相应的
+字符串实例对象的属性和方法。最后销毁字符串实例对象。 
+           注意：1、数字对象参与运算后，又会变成原始值。2、undefined和null没有对应的方法将它们转化为对象。  
         */
-        let m = 1; //原始值
-        let n = new Number(m); //原始值转变为数字对象
-        n.len = 1
-        console.log("&&", n) //Number {1, len: 1}
-        let s = n + 1;  //数字对象参与运算后，又会返回到原始值。
-        console.log(s)  //2
-
-        let f = 123;
-        // new Number(123).len = 3
-        console.log(f.len)  //undefined
-        f.len = 3
-        console.log("f=", f, "f.len", f.len)
-        console.log(f.len) //undefined
+        let str = 'a';   //原始值
+        str.len = 10;   //new String(str).len = 10
+        console.log("str",str,"str.len",str.len)  //a   undefined
+        let strObj = new String(str);  //原始值转变为字符串对象
+        strObj.number = 1;
+        console.log("strObj",strObj); //{'a', number:1}
+        let computeStrObj = strObj + 'b';  //字符串对象参与运算后，又会返回到原始值。
+        console.log("computeStrObj",computeStrObj)  //ab
+        
 
 
         let name = '张三'

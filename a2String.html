@@ -10,34 +10,39 @@
 
 <body>
     <script>
-        /* 1、String构造出来的对象上的方法。
-        1.1、常见的方法如下：
-            str.toUpperCase()：将str字符串的小写字母转换成大写字母。
-            str.toLowerCase()：将str字符串的大写字母转换成小写字母。
-            str.toLocaleLowerCase()、str.toLocaleUpperCase()：针对土耳其等特殊语言
-            str.charAt()：根据下标选择str的字符。从0开始。
-            str.charCodeAt()：根据下标选择str的字符，返回这个字符的unicode编码。
-            String.fromCharCode()：根据unicode编码，将字母拼接成字符串。
-            str.indexOf()：从左往右匹配，返回str中第一个符合条件的字符串的下标，没有返回-1。
-第二个参数表示从哪个下标开始往右检索。
-            str.lastIndexof()：从右往左匹配，返回str中第一个符合条件的字符串的下标，没有返回-1。
-第二个参数表示从哪个下标开始往左检索。
-            str.substr(n,m)：n表示开始位，m表示长度。从str的第n位开始（包含第n位），往右数m位，
-然后返回被数到的字符串。如果n是负数，则从右往左数，开始下标为-1。
-            str.substring(n,m)：n表示开始位，m表示结束位。[n,m)。从str的第n位开始（包含第n位字符），
-往右到m位结束(不包含第m位字符)。然后返回在此区间的所有字符串。如果m>n，系统在匹配前先置换mn。
-nm相等，返回空字符串。
-            str.includes()：返回布尔值，表示是否找到了参数字符串
-            str.startsWith()：返回布尔值，表示参数字符串是否在原字符串的头部
-            str.endsWith()：返回布尔值，表示参数字符串是否在原字符串的尾部
-            str.repeat()：返回一个新的字符串，表示将原字符串重复n次
-            str.padStart(num, string)：如果某个字符串不够参数1指定长度，会在原字符串头部以参数2
-string补全。
-            str.padEnd(num, string)：如果某个字符串不够参数1指定长度，会在原字符串尾部以参数2
-string补全。
+        /*string数据类型中的属性和方法。
+            基本数据类型string不具有属性和方法，String()构造出来的字符串对象才具有属性和方法。但是
+通过string调用属性和方法时，系统先通过new String(string)将字符串转换成字符串实例对象，然后调用相应的
+字符串实例对象的属性和方法。最后销毁字符串实例对象。     
+        1、string中的方法：
+            string.toUpperCase()：将string字符串的小写字母转换成大写字母。
+            string.toLowerCase()：将string字符串的大写字母转换成小写字母。
+            string.toLocaleLowerCase()、string.toLocaleUpperCase()：针对土耳其等特殊语言
+            string.charAt(number)：返回string的下标number所指向的字符。下标从0开始。
+            string.charCodeAt(number)：返回string的下标number所指向的字符的unicode编码。
+            String.fromCharCode(number)：根据unicode编码，将字母拼接成字符串。
+            string.indexOf(str, number)：从左往右匹配string中第一个str，并返回str的下标。
+如果str不存在，则返回-1。number表示从哪个下标开始往右检索，默认为0.
+            string.lastIndexof(str, number)：原理和string.indexOf(str, number)相同，只是匹配
+方向死从右往左。
+            string.substr(numStart, length)：numStart表示匹配开始位，length表示匹配的长度。
+从string的下标numStart开始，往右匹配length字符。然后返回匹配到的字符串。如果length是负数，
+则从右往左数，开始下标为-1。
+            string.substring(numStart, numEnd)：numStart表示匹配开始位，numEnd表示匹配结束位。
+从string的下标numStart开始，匹配到下标numEnd，[numStart, numEnd)。然后返回被匹配到的字符串。
+如果numEnd > numStart，系统在匹配前先置换numStart，numEnd。numStart，numEnd相等，返回空字符串。
+            string.includes(str)：返回布尔值，判断在string中是否找到str。
+            string.startsWith(str)：返回布尔值，判断str是否在string的头部。
+            string.endsWith(str)：返回布尔值，判断str是否在string的尾部。
+            string.repeat(number)：将string重复number次，然后返回一个新的字符串。
+            string.padStart(length, str)：如果string的长度不足length时，则会在string头部以str
+补足到length字符数。
+            string.padEnd(length, str)：如果string的长度不足length时，则会在string尾部以str
+补足到length字符数。
         */
 
-        let str = 'abcd'
+        let str = 'abcd';
+        console.log("str",str)
         console.log(str.toUpperCase())  //ABCD
         console.log(str.toLowerCase())  //abcd
         console.log(str.charAt(2))   //c
